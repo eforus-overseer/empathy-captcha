@@ -234,3 +234,21 @@
 /* Wait */
 .wait-wrap { display: grid; place-items: center; gap: 14px; min-height: 160px; }
 .wait-wrap .btn { padding: 22px 44px; font-size: 16px; }
+
+/* Draw */
+.draw-wrap { display: grid; gap: 12px; justify-items: center; width: 100%; }
+.draw-canvas {
+  background:
+    radial-gradient(circle at 50% 0, rgba(242, 177, 52, 0.05), transparent 70%),
+    rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  touch-action: none;
+  cursor: crosshair;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+}
+.draw-canvas.cursive {
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 36px, rgba(242, 177, 52, 0.12) 36px 37px),
+    rgba(0, 0, 0, 0.45);
+}

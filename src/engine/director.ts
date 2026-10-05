@@ -3,7 +3,7 @@ import type { Rng } from './rng';
 import { clamp } from './stats';
 import type { Act, Challenge } from './types';
 
-export const PLAN_PER_ACT: Record<Act, number> = { 1: 4, 2: 6, 3: 5 };
+export const PLAN_PER_ACT: Record<Act, number> = { 1: 25, 2: 45, 3: 30 };
 export const FIRST_ID = 'not-a-robot';
 export const LAST_ID = 'not-sure-anymore';
 export const MUST_INCLUDE: Record<Act, string[]> = { 1: [FIRST_ID], 2: ['tortoise'], 3: [LAST_ID] };

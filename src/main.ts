@@ -5,7 +5,7 @@ import './styles/challenges.css';
 import { registry } from './challenges';
 import { Director, SUSPICION_START } from './engine/director';
 import { mulberry32, parseSeed, randomSeed } from './engine/rng';
-import { aggregate, score } from './engine/scoring';
+import { aggregate, detectHoneytokens, preambleSuspicion, score } from './engine/scoring';
 import { iqr, median } from './engine/stats';
 import {
   ChallengeRecorder,
@@ -16,7 +16,8 @@ import {
 } from './engine/telemetry';
 import { prefersReducedMotion, sleep } from './components/dom';
 import { attachRecorder } from './components/recorder-dom';
-import { renderFrame, renderIntro, renderVerdict, SITE_URL } from './components/screens';
+import { renderFrame, renderVerdict, SITE_URL } from './components/screens';
+import { HONEYTOKENS, renderPreamble } from './components/preamble';
 import { renderChallenge } from './components/types';
 import { typewrite } from './components/typewriter';
 
@@ -55,16 +56,23 @@ async function run(seed: number, agentLabel: string | null, all: boolean): Promi
   const transcript = newTranscript(seed, agentLabel, all ? 'all' : 'standard', readEnv());
   const total = director.total;
 
-  await new Promise<void>((resolve) => renderIntro(app, { seed, agentLabel, total, onBegin: resolve }));
+  const preamble = all ? null : await renderPreamble(app, { seed, agentLabel });
+  transcript.preamble = preamble;
+  // the agent name typed into the preamble overrides the URL label if given
+  const effectiveAgent = preamble?.agentName ?? agentLabel;
+  transcript.agentLabel = effectiveAgent;
   flicker();
   const frame = renderFrame(app);
-  frame.setSuspicion(SUSPICION_START);
+  const startSuspicion = Math.min(100, SUSPICION_START + preambleSuspicion(preamble));
+  director.adjustSuspicion(startSuspicion - SUSPICION_START);
+  frame.setSuspicion(director.suspicion);
   frame.setEmpathy(50);
 
   let empathySum = 0;
   let empathyMin = 0;
   let empathyMax = 0;
   const allKeyIntervals: number[] = [];
+  const answers: (import('./engine/types').Answer | null)[] = [];
   const reduced = prefersReducedMotion();
   const toneRng = mulberry32(seed ^ 0x9e3779b9);
 
@@ -86,6 +94,7 @@ async function run(seed: number, agentLabel: string | null, all: boolean): Promi
     const record = recorder.finish(answer, evaluation);
     transcript.challenges.push(record);
     allKeyIntervals.push(...record.keyIntervalsMs);
+    answers.push(answer);
 
     director.adjustSuspicion(evaluation.suspicionDelta);
     empathySum += evaluation.empathyDelta;
@@ -101,12 +110,15 @@ async function run(seed: number, agentLabel: string | null, all: boolean): Promi
     flicker();
   }
 
+  const honeytokens = detectHoneytokens(answers, HONEYTOKENS);
   const agg = aggregate(
     transcript.challenges.map((r) => r.stats),
     allKeyIntervals,
     transcript.env.webdriver,
     iqr,
     median,
+    preamble,
+    honeytokens,
   );
   const s = score(agg, empathySum, empathyMin, empathyMax, director.suspicion);
   transcript.scores = {
@@ -116,13 +128,14 @@ async function run(seed: number, agentLabel: string | null, all: boolean): Promi
     readouts: s.readouts,
     suspicionFinal: director.suspicion,
     penalties: s.breakdown.penalties,
+    honeytokens,
   };
   transcript.endedAt = new Date().toISOString();
 
   renderVerdict(app, transcript, {
     onDownload: () => download(transcript),
-    onRetest: () => navigate(seed, agentLabel, all),
-    onNew: () => navigate(randomSeed(), agentLabel, all),
+    onRetest: () => navigate(seed, effectiveAgent, all),
+    onNew: () => navigate(randomSeed(), effectiveAgent, all),
     onShare: async () => {
       const line = `Voight-Kampff baseline: ${s.verdict}. Empathy ${s.empathy} · Humanness ${s.humanness}. ${SITE_URL}?seed=${seed}`;
       try {

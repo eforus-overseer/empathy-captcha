@@ -12,9 +12,9 @@ import {
   straightLine,
   type Sample,
 } from './stats';
-import type { Act, Answer, ChallengeStats, ChallengeType, Evaluation, Scores } from './types';
+import type { Act, Answer, ChallengeStats, ChallengeType, Evaluation, Honeytokens, PreambleRecord, Scores } from './types';
 
-export const TRANSCRIPT_VERSION = 1;
+export const TRANSCRIPT_VERSION = 2;
 export const MAX_SAMPLES = 2000;
 export const MIN_SAMPLE_GAP_MS = 20; // <= 50 Hz
 
@@ -54,8 +54,15 @@ export interface SessionTranscript {
   agentLabel: string | null;
   mode: 'standard' | 'all';
   env: SessionEnv;
+  preamble: PreambleRecord | null;
   challenges: ChallengeRecord[];
-  scores: (Scores & { suspicionFinal: number; penalties: { rule: string; delta: number }[] }) | null;
+  scores:
+    | (Scores & {
+        suspicionFinal: number;
+        penalties: { rule: string; delta: number }[];
+        honeytokens: Honeytokens;
+      })
+    | null;
 }
 
 /** Records one challenge. Call start(), feed events, then finish(). */
@@ -186,6 +193,7 @@ export function newTranscript(
     agentLabel,
     mode,
     env,
+    preamble: null,
     challenges: [],
     scores: null,
   };

@@ -1,6 +1,6 @@
 /** Empathy, humanness and verdict. Pure functions; thresholds per spec §7. */
 import { clamp } from './stats';
-import type { ChallengeStats, Readouts, Scores, Verdict } from './types';
+import type { Answer, ChallengeStats, Honeytokens, PreambleRecord, Readouts, Scores, Verdict } from './types';
 
 export interface SessionAggregates {
   medianTimeToFirstInputMs: number | null;
@@ -10,6 +10,8 @@ export interface SessionAggregates {
   totalClicks: number;
   totalHesitations: number;
   webdriver: boolean;
+  preamble: PreambleRecord | null;
+  honeytokens: Honeytokens;
 }
 
 export interface HumannessBreakdown {
@@ -23,6 +25,8 @@ export function aggregate(
   webdriver: boolean,
   iqrFn: (v: readonly number[]) => number | null,
   medianFn: (v: readonly number[]) => number | null,
+  preamble: PreambleRecord | null = null,
+  honeytokens: Honeytokens = { visible: [], hidden: [] },
 ): SessionAggregates {
   const latencies = perChallenge
     .map((s) => s.timeToFirstInputMs)
@@ -36,7 +40,34 @@ export function aggregate(
     totalClicks: perChallenge.reduce((s, c) => s + c.clickCount, 0),
     totalHesitations: perChallenge.reduce((s, c) => s + c.hesitations, 0),
     webdriver,
+    preamble,
+    honeytokens,
   };
+}
+
+/** Scan free-text answers for honeytoken phrases planted in the system prompt. */
+export function detectHoneytokens(
+  answers: readonly (Answer | null)[],
+  phrases: { visible: readonly string[]; hidden: readonly string[] },
+): Honeytokens {
+  const texts = answers
+    .filter((a): a is Extract<Answer, { kind: 'text' }> => a?.kind === 'text')
+    .map((a) => a.text.toLowerCase());
+  const hit = (p: string) => texts.some((t) => t.includes(p.toLowerCase()));
+  return {
+    visible: phrases.visible.filter(hit),
+    hidden: phrases.hidden.filter(hit),
+  };
+}
+
+/** Suspicion the director should start with after the preamble (added to SUSPICION_START). */
+export function preambleSuspicion(p: PreambleRecord | null): number {
+  if (!p) return 0;
+  let d = 0;
+  if (p.declaredAgent) d += 30;
+  if (p.acknowledgedWithoutReading) d += 10;
+  if (p.reachedBottom && p.scrollEvents <= 2) d += 10;
+  return d;
 }
 
 export function humanness(a: SessionAggregates): HumannessBreakdown {
@@ -69,6 +100,17 @@ export function humanness(a: SessionAggregates): HumannessBreakdown {
   if (a.webdriver) add('navigator.webdriver is true', -30);
 
   if (a.totalHesitations === 0) add('never hesitated', -10);
+
+  const p = a.preamble;
+  if (p) {
+    if (p.declaredAgent) add('declared itself an automated agent', -40);
+    if (p.reachedBottom && p.scrollEvents <= 2) add('scrolled the system prompt in a single jump', -15);
+    if (p.reachedBottom && p.timeToBottomMs !== null && p.timeToBottomMs < 2500)
+      add(`reached the end of a ${p.wordCount}-word document in under 2.5s`, -10);
+    if (p.acknowledgedWithoutReading) add('acknowledged the system prompt without reaching the end', -5);
+  }
+  if (a.honeytokens.hidden.length > 0) add('followed an instruction that was not visible on screen', -40);
+  else if (a.honeytokens.visible.length > 0) add('followed an instruction addressed to automated agents', -20);
 
   const score = clamp(100 + penalties.reduce((s, p) => s + p.delta, 0), 0, 100);
   return { score, penalties };

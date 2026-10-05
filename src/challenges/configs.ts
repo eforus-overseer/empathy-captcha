@@ -26,7 +26,7 @@ export interface TextConfig {
   /** Show a CSS-distorted word above the field. */
   distortedWord?: string;
   /** Show a play button that synthesises a sound. */
-  audio?: 'whale';
+  audio?: 'whale' | 'heartbeat' | 'rain';
   /** Return an error message to block submit, or null to accept. */
   validate?: (text: string) => string | null;
   maxLength?: number;
@@ -56,4 +56,16 @@ export interface SliderConfig {
 
 export interface WaitConfig {
   label: string;
+}
+
+export interface DrawConfig {
+  mode: 'cursive' | 'sketch';
+  /** Quick, Draw! class name to match against for sketch mode. */
+  target?: string;
+  /** The word to trace for cursive mode. */
+  word?: string;
+  /** Hint glyph shown faintly behind the canvas. */
+  glyph?: string;
+  /** Milliseconds before the canvas is accepted empty-handed (sketch). */
+  prompt2?: string;
 }

@@ -320,3 +320,40 @@ details.penalties li { margin: 2px 0; }
   .prompt .caret { animation: none; }
   .bar > span { transition: none; }
 }
+
+/* System-prompt preamble */
+.prompt-scroll {
+  max-height: 46vh;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin: 10px 0 6px;
+  text-align: left;
+  scroll-behavior: smooth;
+}
+.prompt-scroll:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.prompt-scroll.read { border-color: var(--amber-dim); }
+.prompt-filename {
+  margin: 0 0 14px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  border-bottom: 1px dashed var(--line);
+  padding-bottom: 8px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.prompt-head { color: var(--amber); text-shadow: 0 0 8px var(--amber-glow); margin-top: 0; letter-spacing: 0.04em; }
+.prompt-para { color: var(--text); font-size: 14px; line-height: 1.65; }
+.read-bar { height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; margin-bottom: 16px; }
+.read-bar > span { display: block; height: 100%; width: 0; background: var(--amber); box-shadow: 0 0 6px var(--amber-glow); transition: width 160ms linear; }
+.preamble-controls { display: grid; gap: 12px; justify-items: start; }
+.agent-field { max-width: 320px; }
+.ack { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text); cursor: pointer; }
+.ack input { width: 18px; height: 18px; accent-color: var(--amber); }
+@media (prefers-reduced-motion: reduce) {
+  .prompt-scroll { scroll-behavior: auto; }
+  .read-bar > span { transition: none; }
+}

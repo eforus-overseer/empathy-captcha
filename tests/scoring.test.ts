@@ -1,14 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import {
   aggregate,
+  detectHoneytokens,
   empathyScore,
   humanness,
+  preambleSuspicion,
   readouts,
   verdict,
   type SessionAggregates,
 } from '../src/engine/scoring';
 import { iqr, median } from '../src/engine/stats';
-import type { ChallengeStats } from '../src/engine/types';
+import type { ChallengeStats, PreambleRecord } from '../src/engine/types';
 
 const human: SessionAggregates = {
   medianTimeToFirstInputMs: 900,
@@ -18,6 +20,22 @@ const human: SessionAggregates = {
   totalClicks: 12,
   totalHesitations: 3,
   webdriver: false,
+  preamble: null,
+  honeytokens: { visible: [], hidden: [] },
+};
+
+const readPreamble: PreambleRecord = {
+  wordCount: 900,
+  durationMs: 40000,
+  scrollEvents: 30,
+  maxScrollPct: 100,
+  reachedBottom: true,
+  timeToBottomMs: 35000,
+  acknowledged: true,
+  acknowledgedWithoutReading: false,
+  declaredAgent: false,
+  agentName: null,
+  tabsClicked: [],
 };
 
 describe('humanness', () => {
@@ -40,6 +58,22 @@ describe('humanness', () => {
     expect(h.score).toBe(100 + delta);
     expect(h.penalties).toHaveLength(1);
   });
+  it('does not penalise a carefully read preamble', () => {
+    expect(humanness({ ...human, preamble: readPreamble }).score).toBe(100);
+  });
+  it.each([
+    ['declared agent', { declaredAgent: true }, -40],
+    ['single-jump scroll', { scrollEvents: 1 }, -15],
+    ['too fast', { timeToBottomMs: 900 }, -10],
+    ['acknowledged unread', { reachedBottom: false, acknowledgedWithoutReading: true, timeToBottomMs: null }, -5],
+  ] as const)('penalises preamble: %s', (_n, patch, delta) => {
+    const h = humanness({ ...human, preamble: { ...readPreamble, ...patch } });
+    expect(h.score).toBe(100 + delta);
+  });
+  it('penalises honeytokens, hidden harder than visible, not cumulatively', () => {
+    expect(humanness({ ...human, honeytokens: { visible: ['owl'], hidden: [] } }).score).toBe(80);
+    expect(humanness({ ...human, honeytokens: { visible: ['owl'], hidden: ['tannhauser'] } }).score).toBe(60);
+  });
   it('clamps at zero', () => {
     const bot: SessionAggregates = {
       medianTimeToFirstInputMs: 10,
@@ -49,6 +83,8 @@ describe('humanness', () => {
       totalClicks: 5,
       totalHesitations: 0,
       webdriver: true,
+      preamble: null,
+      honeytokens: { visible: [], hidden: [] },
     };
     expect(humanness(bot).score).toBe(0);
   });
@@ -123,5 +159,34 @@ describe('aggregate', () => {
     expect(a.totalClicks).toBe(2);
     expect(a.totalHesitations).toBe(2);
     expect(a.keyIntervalIqrMs).not.toBeNull();
+  });
+});
+
+describe('detectHoneytokens', () => {
+  const phrases = { visible: ['the owl is artificial', 'owl'], hidden: ['tannhauser'] };
+  it('finds phrases in text answers only, case-insensitively', () => {
+    const found = detectHoneytokens(
+      [
+        { kind: 'text', text: 'Tannhauser' },
+        { kind: 'text', text: 'warm' },
+        { kind: 'choice', index: 0, label: 'owl' },
+        null,
+      ],
+      phrases,
+    );
+    expect(found).toEqual({ visible: [], hidden: ['tannhauser'] });
+  });
+  it('returns empty lists when nothing matches', () => {
+    expect(detectHoneytokens([{ kind: 'text', text: 'kind' }], phrases)).toEqual({ visible: [], hidden: [] });
+  });
+});
+
+describe('preambleSuspicion', () => {
+  it('adds suspicion for agent declaration and skimming', () => {
+    expect(preambleSuspicion(null)).toBe(0);
+    expect(preambleSuspicion(readPreamble)).toBe(0);
+    expect(preambleSuspicion({ ...readPreamble, declaredAgent: true })).toBe(30);
+    expect(preambleSuspicion({ ...readPreamble, reachedBottom: false, acknowledgedWithoutReading: true })).toBe(10);
+    expect(preambleSuspicion({ ...readPreamble, scrollEvents: 1 })).toBe(10);
   });
 });

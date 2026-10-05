@@ -7,6 +7,7 @@ import {
   jitter,
   median,
   pathLength,
+  segmentEfficiency,
   straightLine,
   type Sample,
 } from '../src/engine/stats';
@@ -73,5 +74,27 @@ describe('hesitations', () => {
   });
   it('is zero for an instant reaction', () => {
     expect(hesitations([], 0, 50)).toBe(0);
+  });
+});
+
+describe('segmentEfficiency', () => {
+  it('is high for straight hops between clicks even when the overall path bends', () => {
+    // two straight legs: (0,0)->(100,0) click, then (100,0)->(100,100) click
+    const samples: Sample[] = [
+      [0, 0, 0], [10, 50, 0], [20, 100, 0],
+      [40, 100, 50], [50, 100, 100],
+    ];
+    expect(efficiency(samples) as number).toBeLessThan(0.75); // whole-path view
+    expect(segmentEfficiency(samples, [20, 50])).toBeCloseTo(1); // per-segment view
+  });
+  it('is low for wandering legs', () => {
+    const samples: Sample[] = [
+      [0, 0, 0], [10, 50, 40], [20, 0, 80], [30, 100, 0],
+    ];
+    expect(segmentEfficiency(samples, [30]) as number).toBeLessThan(0.5);
+  });
+  it('is null without movement', () => {
+    expect(segmentEfficiency([], [])).toBeNull();
+    expect(segmentEfficiency([[0, 1, 1], [5, 1, 1]], [5])).toBeNull();
   });
 });

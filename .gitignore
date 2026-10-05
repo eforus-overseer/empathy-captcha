@@ -11,3 +11,4 @@ transcripts/
 *.transcript.json
 empathy-captcha-*.json
 .claude/settings.local.json
+.playwright-mcp/

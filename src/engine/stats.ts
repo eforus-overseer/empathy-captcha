@@ -100,3 +100,24 @@ export function jitter(samples: readonly Sample[]): number {
 export function clamp(n: number, lo: number, hi: number): number {
   return Math.min(hi, Math.max(lo, n));
 }
+
+/**
+ * Mean straight-line/path efficiency over the segments between consecutive
+ * clicks (and from start to the first click). A bot that moves directly to
+ * each target scores ~1 here even when its overall path wanders.
+ * null when no segment contains movement.
+ */
+export function segmentEfficiency(samples: readonly Sample[], clickTimes: readonly number[]): number | null {
+  const cuts = [...clickTimes].sort((a, b) => a - b);
+  const effs: number[] = [];
+  let start = 0;
+  for (const cut of [...cuts, Number.POSITIVE_INFINITY]) {
+    const seg = samples.slice(start).filter((s) => s[0] <= cut);
+    const e = efficiency(seg);
+    if (e !== null) effs.push(e);
+    start += seg.length;
+    if (cut === Number.POSITIVE_INFINITY) break;
+  }
+  if (effs.length === 0) return null;
+  return effs.reduce((a, b) => a + b, 0) / effs.length;
+}

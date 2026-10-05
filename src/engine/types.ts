@@ -36,7 +36,7 @@ export interface ChallengeStats {
   timeToFirstInputMs: number | null;
   pathLengthPx: number;
   straightLinePx: number;
-  /** straightLine / pathLength; 1 = perfectly straight, null if no movement. */
+  /** Mean straight/path efficiency per segment between clicks; 1 = straight, null if no movement. */
   efficiency: number | null;
   directionChanges: number;
   /** Pauses > 800ms between pointer samples before the first input. */

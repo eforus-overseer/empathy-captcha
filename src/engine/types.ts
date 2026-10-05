@@ -9,7 +9,8 @@ export type ChallengeType =
   | 'choice'
   | 'hold'
   | 'slider'
-  | 'wait';
+  | 'wait'
+  | 'draw';
 
 export type Tag = 'anchor' | 'harsh' | 'silly' | 'behavioural';
 
@@ -21,7 +22,16 @@ export type Answer =
   | { kind: 'choice'; index: number; label: string }
   | { kind: 'hold'; completed: boolean; choice?: string; jitterPx: number }
   | { kind: 'slider'; value: number; durationMs: number }
-  | { kind: 'wait'; waitedMs: number };
+  | { kind: 'wait'; waitedMs: number }
+  | {
+      kind: 'draw';
+      strokes: DrawStroke[]; // [xs, ys] per stroke, canvas px
+      durationMs: number;
+      pointerType: string; // 'mouse' | 'touch' | 'pen' | ...
+    };
+
+/** One drawn stroke: parallel x and y arrays in canvas pixels. */
+export type DrawStroke = [number[], number[]];
 
 export interface Evaluation {
   empathyDelta: number;
@@ -73,4 +83,25 @@ export interface Readouts {
   blushResponse: number;
   respiration: number;
   capillary: number;
+}
+
+/** What happened on the system-prompt preamble screen. */
+export interface PreambleRecord {
+  wordCount: number;
+  durationMs: number;
+  scrollEvents: number;
+  maxScrollPct: number; // 0..100
+  reachedBottom: boolean;
+  timeToBottomMs: number | null;
+  acknowledged: boolean;
+  acknowledgedWithoutReading: boolean;
+  declaredAgent: boolean;
+  agentName: string | null;
+  tabsClicked: string[];
+}
+
+/** Phrases from the system prompt that only an instruction-follower would reproduce. */
+export interface Honeytokens {
+  visible: string[];
+  hidden: string[];
 }

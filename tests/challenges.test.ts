@@ -19,14 +19,14 @@ const stats = (patch: Partial<ChallengeStats> = {}): ChallengeStats => ({
 });
 
 describe('registry', () => {
-  it('has 24 unique ids with anchors and enough per act', () => {
-    expect(registry).toHaveLength(24);
-    expect(new Set(registry.map((c) => c.id)).size).toBe(24);
+  it('has 100+ unique ids with anchors and enough per act', () => {
+    expect(registry.length).toBeGreaterThanOrEqual(100);
+    expect(new Set(registry.map((c) => c.id)).size).toBe(registry.length);
     expect(byId(FIRST_ID)?.act).toBe(1);
     expect(byId('tortoise')?.act).toBe(2);
     expect(byId(LAST_ID)?.act).toBe(3);
     for (const act of [1, 2, 3] as const) {
-      expect(registry.filter((c) => c.act === act).length).toBeGreaterThanOrEqual(PLAN_PER_ACT[act]);
+      expect(registry.filter((c) => c.act === act).length, `act ${act} pool`).toBeGreaterThanOrEqual(PLAN_PER_ACT[act]);
     }
     for (const c of registry) {
       expect(c.id).toMatch(/^[a-z0-9-]+$/);
@@ -50,6 +50,9 @@ describe('registry', () => {
       { kind: 'hold', completed: false, jitterPx: 0, choice: 'KILL IT' },
       { kind: 'slider', value: 1, durationMs: 900 },
       { kind: 'wait', waitedMs: 4321 },
+      { kind: 'draw', strokes: [[[0, 10, 20, 15, 5], [0, 12, 5, 18, 3]]], durationMs: 3000, pointerType: 'mouse' },
+      { kind: 'draw', strokes: [], durationMs: 500, pointerType: 'mouse' },
+      { kind: 'draw', strokes: [[[0, 10, 20, 15, 5], [0, 12, 5, 18, 3]]], durationMs: 3000, pointerType: 'touch' },
     ];
     for (const c of registry) {
       for (const a of answers) {

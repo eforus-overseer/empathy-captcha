@@ -96,6 +96,8 @@ describe('transcript', () => {
     expect(t.agentLabel).toBe('cua-v1');
     expect(t.env.webdriver).toBe(false);
     expect(t.challenges).toEqual([]);
+    expect(t.preamble).toBeNull();
+    expect(TRANSCRIPT_VERSION).toBe(2);
     expect(t.startedAt).toBe('1970-01-01T00:00:00.000Z');
     expect(JSON.parse(JSON.stringify(t))).toEqual(t);
     expect(transcriptFilename(t)).toBe('empathy-captcha-VK-TEST1234.json');

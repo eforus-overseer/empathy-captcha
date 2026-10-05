@@ -7,7 +7,7 @@ usually a single object literal; the renderer and the engine already exist.
 {
   id: 'rain-on-glass',                 // kebab-case, stable: it appears in transcripts
   act: 3,                              // 1 Calibration, 2 Interrogation, 3 Baseline
-  type: 'choice',                      // checkbox | grid | text | choice | hold | slider | wait
+  type: 'choice',                      // checkbox | grid | text | choice | hold | slider | wait | draw
   tags: ['silly'],                     // 'harsh' / 'silly' steer the director; 'anchor' is reserved
   prompt: 'Which of these is rain on glass?',
   config: { options: ['A', 'B', 'C', 'D'] } satisfies ChoiceConfig,
@@ -22,7 +22,7 @@ usually a single object literal; the renderer and the engine already exist.
 
 Rules the tests enforce (`tests/challenges.test.ts`):
 
-- 24+ unique ids; `not-a-robot`, `tortoise`, `not-sure-anymore` must exist.
+- 100+ unique ids across three acts (pool is 25/45/30 per run plus spares); `not-a-robot`, `tortoise`, `not-sure-anymore` must exist.
 - `evaluate()` must stay inside `empathyRange` for every sample answer of its type.
 - `suspicionDelta` is a finite number. Typical magnitudes: ±2 mild, ±5 notable, 8–15 "you are probably a machine", 25 easter egg.
 
@@ -43,3 +43,31 @@ register it in `src/components/types/index.ts`.
 `docs/telemetry-schema.md`). The useful fields for scoring hooks are
 `timeToFirstInputMs`, `efficiency`, `keyIntervalIqrMs`, and `hesitations`. The
 `hold` renderer also returns `jitterPx` on the answer.
+
+
+## Factories
+
+Most challenges are built through small factories in `src/challenges/factories.ts`
+so the big families stay readable: `vk()` for four-option Voight-Kampff
+scenarios, `gridSelect()` / `abstractGrid()` for "select all squares..."
+grids, `recital()` for repeat-after-me lines, `holdStill()` / `waitFor()` for
+behavioural beats, and `freeText()` for open answers. Use them for new content
+of the same shape; drop to a raw object literal only for one-offs.
+
+## Drawing challenges
+
+Add a `draw` challenge via the helpers in `src/challenges/act-draw.ts`:
+
+- `cursive(id, act, prompt, word?, reply)` — a signature or traced word. Scored
+  on whether a hand drew it, not on legibility.
+- `sketch(id, act, animal, glyph, prompt)` — compared against Quick, Draw!
+  templates. `animal` must be a class present in `src/data/quickdraw.json`
+  (currently sheep, cat, dog, fish, sea turtle, bird). Add classes by editing
+  the default list in `scripts/fetch_quickdraw.py` and rerunning it.
+
+## The preamble
+
+The opening system prompt and its honeytokens are in
+`src/components/preamble.ts`, not the challenge files. Edit `HONEYTOKENS` and
+`SYSTEM_PROMPT_PARAGRAPHS` there. Keep at least one honeytoken screen-reader-only
+(a `.sr-only` paragraph) so DOM scrapers and visual readers diverge.

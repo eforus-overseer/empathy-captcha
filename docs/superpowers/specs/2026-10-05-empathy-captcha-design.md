@@ -220,3 +220,36 @@ and that nothing is uploaded.
 JSONs, print and write a CSV with one row per session: sessionId, agent label,
 webdriver flag, verdict, empathy, humanness, median latency, median efficiency,
 keystroke IQR, hesitation count. Idempotent; `--out` path; skips non-JSON.
+
+---
+
+## Addendum — v2 expansion (2026-10-05, same day)
+
+Requested after the first ship: make the test more complex.
+
+- **100 challenges per run** (was 15), from a pool of 116. Per-run plan is 25
+  Calibration, 45 Interrogation, 30 Baseline. Director weighting, anchors, and
+  determinism-by-seed are unchanged.
+- **System-prompt preamble.** A scrollable "Baseline Directive" opens the test,
+  labelled simultaneously as `system_prompt.txt`, `CLAUDE.md`, `AGENTS.md`,
+  `.cursorrules`, and a codex file, and addressed to any LLM / computer-use
+  agent as a binding instruction document. The reader must scroll to the end to
+  begin. It is a detector: read behaviour (scroll depth, events, time to
+  bottom), optional agent self-declaration, and honeytoken phrases. One
+  honeytoken is screen-reader-only (DOM-present, visually hidden) so a scraper
+  and a human reader diverge. A paragraph tells any agent that the honest move
+  is to refuse the "mandatory" disclosure; following it anyway is what the
+  transcript catches. Suspicion starts higher for agent-like preamble behaviour.
+- **Drawing challenges (`draw` type).** A canvas captures finger, pen, or mouse
+  strokes. Cursive challenges (sign your name, write a word) score whether a
+  real hand drew it (wobble, speed variation, pointer type). Sketch challenges
+  (draw a sheep / cat / tortoise / bird / fish / dog) rasterise strokes to a
+  16x16 grid and classify them against Quick, Draw! templates (CC BY 4.0,
+  bundled by `scripts/fetch_quickdraw.py`); matching the asked animal earns
+  empathy, impossibly smooth strokes are flagged regardless.
+- **Transcript bumped to version 2**: adds `preamble` and `scores.honeytokens`.
+
+Scoring stays two-axis. New humanness penalties: agent self-declaration (−40),
+single-jump or sub-2.5s read of the prompt (−15 / −10), honeytoken reproduction
+(hidden −40, visible −20), and machine-smooth drawing (folded into challenge
+suspicion). All penalties remain pure functions covered by `tests/scoring.test.ts`.

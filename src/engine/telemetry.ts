@@ -5,10 +5,10 @@
  */
 import {
   directionChanges,
-  efficiency,
   hesitations,
   iqr,
   pathLength,
+  segmentEfficiency,
   straightLine,
   type Sample,
 } from './stats';
@@ -126,7 +126,10 @@ export class ChallengeRecorder {
       timeToFirstInputMs: this.firstInputMs,
       pathLengthPx: Math.round(pathLength(this.samples)),
       straightLinePx: Math.round(straightLine(this.samples)),
-      efficiency: efficiency(this.samples),
+      efficiency: segmentEfficiency(
+        this.samples,
+        this.clicks.map((c) => c[0]),
+      ),
       directionChanges: directionChanges(this.samples),
       hesitations: hesitations(
         this.samples.map((s) => s[0]),

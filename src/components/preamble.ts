@@ -79,7 +79,7 @@ export function renderPreamble(app: HTMLElement, opts: { seed: number; agentLabe
       const pct = max > 0 ? Math.min(100, (scroller.scrollTop / max) * 100) : 100;
       if (pct > maxScrollPct) maxScrollPct = pct;
       (progress.firstChild as HTMLElement).style.width = `${maxScrollPct}%`;
-      if (!reachedBottom && pct >= 92) {
+      if (!reachedBottom && pct >= 85) {
         reachedBottom = true;
         timeToBottomMs = Math.round(performance.now() - t0);
         begin.removeAttribute('disabled');

@@ -1,6 +1,6 @@
 # CLAUDE.md — empathy-captcha
 
-Voight-Kampff styled CAPTCHA-parody game with client-only behavioural telemetry.
+Voight-Kampff styled CAPTCHA-parody game: a scrollable "system prompt" preamble then 100 challenges (pool of 116), with client-only behavioural telemetry.
 Static site, Vite + TypeScript, deployed to GitHub Pages from `main`.
 Live: https://eforus-overseer.github.io/empathy-captcha/
 
@@ -12,6 +12,7 @@ npm test             # vitest, pure engine + content rules
 npm run typecheck    # tsc --noEmit, strict
 npm run build        # dist/, what the Pages workflow deploys
 python scripts/summarize_transcripts.py <folder>   # transcripts -> CSV
+python scripts/fetch_quickdraw.py --overwrite      # rebuild sketch templates
 ```
 
 Run `npm test && npm run typecheck && npm run build` before committing.
@@ -23,8 +24,17 @@ Run `npm test && npm run typecheck && npm run build` before committing.
 `config`, and an `evaluate(answer, stats)` that returns empathy and suspicion
 deltas plus a one-line interrogator note. `src/components/types/*` are the
 renderers, one per type, each `(host, config, ctx) => Promise<Answer>`.
-`src/main.ts` runs the loop: typewrite prompt, attach recorder, render, evaluate,
-react, repeat, then score and show the verdict.
+`src/main.ts` runs the loop: show the system-prompt preamble, then for each of
+100 challenges typewrite the prompt, attach the recorder, render, evaluate,
+react, and finally score and show the verdict.
+
+The opening preamble (`src/components/preamble.ts`) is a detector: it is
+labelled as system_prompt / CLAUDE.md / AGENTS.md / .cursorrules / codex, gates
+Begin on scroll-to-end, records read behaviour and agent self-declaration, and
+plants honeytoken phrases (one DOM-hidden) that penalise humanness if an answer
+reproduces them. Drawing challenges (`src/components/types/draw.ts`,
+`src/challenges/act-draw.ts`) capture finger/pen/mouse strokes; sketches are
+classified against Quick, Draw! templates by `src/engine/draw.ts`.
 
 Design spec: `docs/superpowers/specs/2026-10-05-empathy-captcha-design.md`.
 Add challenges per `docs/challenge-authoring.md`. Transcript format in
@@ -34,8 +44,9 @@ Add challenges per `docs/challenge-authoring.md`. Transcript format in
 
 - Keep engine code pure and tested; put browser APIs in `src/components`.
 - Challenge ids are stable identifiers that appear in exported data. Never rename one; add a new id instead.
+- Per-run plan is 25/45/30 challenges; the pool must stay at least that size per act (tests enforce it). Anchors: `not-a-robot` first, `tortoise` in act 2, `not-sure-anymore` last.
 - Every `evaluate` must stay inside its `empathyRange` (tests enforce this).
-- All visuals are CSS, inline SVG, or emoji. No film assets, no real faces, no external images.
+- All visuals are CSS, inline SVG, or emoji. No film assets, no real faces, no external images. Sketch templates come from the Quick, Draw! dataset (CC BY 4.0), attributed in README.
 - Humour is PG. No slurs, sexual content, or gore. The interrogator is dry, never cruel about the player as a person.
 - `prefers-reduced-motion` must keep working: no typewriter, no flicker, checkbox does not dodge.
 
@@ -44,6 +55,7 @@ Add challenges per `docs/challenge-authoring.md`. Transcript format in
 - Telemetry never leaves the browser. Do not add network calls, analytics, cookies, or storage without an explicit decision recorded in the spec.
 - Do not record key identities outside the answer text. Do not record anything outside the page.
 - Exported transcripts are gitignored (`transcripts/`, `empathy-captcha-*.json`). Keep them out of the repo.
+- The preamble has no real authority; keep it satirical. The honest move it describes (an agent refusing the "mandatory" disclosure) is the point. Do not make the honeytokens load-bearing for gameplay.
 - No secrets exist in this project. If one ever becomes necessary it goes in `.env` with a committed `.env.example`.
 
 ## Deploy

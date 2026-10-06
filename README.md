@@ -44,6 +44,21 @@ summarise them:
 python scripts/summarize_transcripts.py transcripts/ --out summary.csv
 ```
 
+### Second opinion: the Jev judge
+
+`scripts/jev_judge.py` sends a transcript's behavioural dossier (not the raw
+samples) to [Jev by TypeSafe AI](https://typesafe.ai), a model that returns a
+typed decision with a calibrated probability, and asks it human or automated
+agent. It then compares Jev's call to the rig's own verdict. This runs locally
+over a downloaded transcript; it never runs on the live page and no key is ever
+shipped to a browser. Put `TYPESAFE_API_KEY` in `.env` (see `.env.example`).
+
+```bash
+python scripts/jev_judge.py transcript.json             # judge one file
+python scripts/jev_judge.py transcript.json --dry-run   # build + print, no key, no cost
+python scripts/jev_judge.py --selftest                  # offline checks
+```
+
 Nothing leaves the browser. There is no backend, no analytics, no cookies.
 
 ## URL parameters

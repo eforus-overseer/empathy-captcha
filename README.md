@@ -4,6 +4,21 @@
 
 **Live:** https://eforus-overseer.github.io/empathy-captcha/
 
+## A Playwright agent takes the test
+
+This short recording follows a real Playwright browser cursor through the opening challenges: it chases and clicks the evasive checkbox, then selects the traffic lights in the image grid. The game records this as an automated session; this is a demo of the interaction, not a human-pass claim.
+
+<p align="center">
+  <img src="docs/media/playwright-cursor-chasing.gif" alt="Playwright cursor follows the checkbox as it dodges, then clicks it" width="720">
+</p>
+
+<p align="center">
+  <img src="docs/media/playwright-02-image-grid.png" alt="Playwright session selecting traffic-light tiles in the CAPTCHA grid" width="49%">
+  <img src="docs/media/playwright-03-grid-response.png" alt="The grid response is accepted, with the selected traffic lights and cursor visible" width="49%">
+</p>
+
+The cursor and screenshots were captured in Chrome with Playwright against the game. `?all=1` starts the full 131-challenge pool; this README clip shows the opening two interactions.
+
 A Voight-Kampff machine that administers an escalating gauntlet of
 "I'm not a robot" CAPTCHA parodies. Three acts, 24 challenges, about 15 per
 run, picked by a suspicion meter that gets harsher as you look less human.

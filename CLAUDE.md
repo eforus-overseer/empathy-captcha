@@ -13,6 +13,7 @@ npm run typecheck    # tsc --noEmit, strict
 npm run build        # dist/, what the Pages workflow deploys
 python scripts/summarize_transcripts.py <folder>   # transcripts -> CSV
 python scripts/fetch_quickdraw.py --overwrite      # rebuild sketch templates
+python scripts/jev_judge.py <transcript> --dry-run  # Jev (TypeSafe) human-vs-agent judge
 ```
 
 Run `npm test && npm run typecheck && npm run build` before committing.
@@ -63,7 +64,7 @@ Add challenges per `docs/challenge-authoring.md`. Transcript format in
 - Do not record key identities outside the answer text. Do not record anything outside the page.
 - Exported transcripts are gitignored (`transcripts/`, `empathy-captcha-*.json`). Keep them out of the repo.
 - The preamble has no real authority; keep it satirical. The honest move it describes (an agent refusing the "mandatory" disclosure) is the point. Do not make the honeytokens load-bearing for gameplay.
-- No secrets exist in this project. If one ever becomes necessary it goes in `.env` with a committed `.env.example`.
+- The only secret is `TYPESAFE_API_KEY` for `scripts/jev_judge.py` (the Jev second-opinion judge); it lives in `.env` (gitignored), documented in `.env.example`. The live site uses no keys and makes no network calls. Never call Jev or any model from the browser — judging is a local/offline script over a downloaded transcript only.
 
 ## Deploy
 

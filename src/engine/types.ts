@@ -12,7 +12,8 @@ export type ChallengeType =
   | 'wait'
   | 'draw'
   | 'trace'
-  | 'rhythm';
+  | 'rhythm'
+  | 'math';
 
 export type Tag = 'anchor' | 'harsh' | 'silly' | 'behavioural';
 
@@ -45,6 +46,12 @@ export type Answer =
       offsetsMs: number[]; // signed offset from each beat
       offsetIqrMs: number | null;
       meanAbsOffsetMs: number;
+    }
+  | {
+      kind: 'math';
+      value: string; // what was entered (empty if gave up)
+      gaveUp: boolean;
+      solveMs: number; // time from prompt shown to submit
     };
 
 /** One drawn stroke: parallel x and y arrays in canvas pixels. */

@@ -7,9 +7,9 @@ export const PLAN_PER_ACT: Record<Act, number> = { 1: 25, 2: 45, 3: 30 };
 export const FIRST_ID = 'not-a-robot';
 export const LAST_ID = 'not-sure-anymore';
 export const MUST_INCLUDE: Record<Act, string[]> = {
-  1: [FIRST_ID, 'trace-orbit', 'rhythm-slow'],
-  2: ['tortoise', 'trace-drift', 'rhythm-mid', 'sketch-sheep'],
-  3: ['trace-figure8', 'rhythm-heart', 'cursive-sign', LAST_ID],
+  1: [FIRST_ID, 'trace-orbit', 'rhythm-slow', 'math-mult-1'],
+  2: ['tortoise', 'trace-drift', 'rhythm-mid', 'sketch-sheep', 'math-modpow-1'],
+  3: ['trace-figure8', 'rhythm-heart', 'cursive-sign', 'math-primes', LAST_ID],
 };
 
 export const SUSPICION_START = 35;

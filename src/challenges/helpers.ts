@@ -1,10 +1,13 @@
-import type { Answer, Evaluation } from '../engine/types';
+import type { Answer, BotTell, Evaluation } from '../engine/types';
 
-export const ev = (empathyDelta: number, suspicionDelta: number, note: string): Evaluation => ({
+export const ev = (empathyDelta: number, suspicionDelta: number, note: string, tell?: BotTell): Evaluation => ({
   empathyDelta,
   suspicionDelta,
   note,
+  ...(tell ? { tell } : {}),
 });
+
+export const tell = (severity: BotTell['severity'], reason: string): BotTell => ({ severity, reason });
 
 export function textOf(a: Answer): string {
   return a.kind === 'text' ? a.text.trim() : '';

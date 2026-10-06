@@ -1,7 +1,7 @@
 /** Small factories so the big challenge families stay readable. */
 import type { Act, Challenge, Tag } from '../engine/types';
 import type { ChoiceConfig, GridConfig, HoldConfig, TextConfig, Tile, WaitConfig } from './configs';
-import { ev, textOf } from './helpers';
+import { ev, tell, textOf } from './helpers';
 
 export type Row = [label: string, empathy: number, suspicion: number, note: string];
 
@@ -67,8 +67,8 @@ export function recital(id: string, act: Act, line: string, reply: string): Chal
     empathyRange: [0, 1],
     evaluate: (a, s) => {
       if (norm(textOf(a)) !== norm(line)) return ev(0, 3, 'Not exactly. Again, later.');
-      if (s.keyIntervalIqrMs === null) return ev(0, 12, 'You did not type that. It arrived whole.');
-      if (s.keyIntervalIqrMs < 5) return ev(0, 15, 'Every keystroke the same distance apart.');
+      if (s.keyIntervalIqrMs === null) return ev(0, 12, 'You did not type that. It arrived whole.', tell('major', 'text appeared without keystrokes'));
+      if (s.keyIntervalIqrMs < 5) return ev(0, 15, 'Every keystroke the same distance apart.', tell('major', 'keystrokes with no rhythm variance'));
       return ev(1, -2, reply);
     },
   };

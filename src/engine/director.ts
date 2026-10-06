@@ -6,7 +6,11 @@ import type { Act, Challenge } from './types';
 export const PLAN_PER_ACT: Record<Act, number> = { 1: 25, 2: 45, 3: 30 };
 export const FIRST_ID = 'not-a-robot';
 export const LAST_ID = 'not-sure-anymore';
-export const MUST_INCLUDE: Record<Act, string[]> = { 1: [FIRST_ID], 2: ['tortoise'], 3: [LAST_ID] };
+export const MUST_INCLUDE: Record<Act, string[]> = {
+  1: [FIRST_ID, 'trace-orbit', 'rhythm-slow'],
+  2: ['tortoise', 'trace-drift', 'rhythm-mid', 'sketch-sheep'],
+  3: ['trace-figure8', 'rhythm-heart', 'cursive-sign', LAST_ID],
+};
 
 export const SUSPICION_START = 35;
 
@@ -21,6 +25,7 @@ export class Director {
   private readonly queue: Challenge[] = [];
   private readonly pools: Record<Act, Challenge[]>;
   private currentAct: Act = 1;
+  private readonly musts: Record<Act, string[]>;
   private readonly all: boolean;
 
   constructor(
@@ -31,6 +36,12 @@ export class Director {
     this.all = opts.all ?? false;
     this.pools = { 1: [], 2: [], 3: [] };
     for (const c of registry) this.pools[c.act].push(c);
+    const ids = new Set(registry.map((c) => c.id));
+    this.musts = {
+      1: MUST_INCLUDE[1].filter((id) => ids.has(id)),
+      2: MUST_INCLUDE[2].filter((id) => ids.has(id)),
+      3: MUST_INCLUDE[3].filter((id) => ids.has(id)),
+    };
     if (this.all) this.queue.push(...registry);
   }
 
@@ -85,7 +96,7 @@ export class Director {
     if (candidates.length === 0) return null;
 
     const remaining = this.remainingInAct(act);
-    const mustIds = MUST_INCLUDE[act].filter((id) => !this.played.includes(id));
+    const mustIds = this.musts[act].filter((id) => !this.played.includes(id));
 
     // Anchors: FIRST_ID opens the run, LAST_ID closes it, others when slots run out.
     if (act === 1 && this.played.length === 0) {

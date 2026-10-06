@@ -1,6 +1,6 @@
 /** Empathy, humanness and verdict. Pure functions; thresholds per spec §7. */
 import { clamp } from './stats';
-import type { Answer, ChallengeStats, Honeytokens, PreambleRecord, Readouts, Scores, Verdict } from './types';
+import type { BotTell, Answer, ChallengeStats, Honeytokens, PreambleRecord, Readouts, Scores, Verdict } from './types';
 
 export interface SessionAggregates {
   medianTimeToFirstInputMs: number | null;
@@ -14,6 +14,9 @@ export interface SessionAggregates {
   honeytokens: Honeytokens;
   medianSolveMs: number | null;
   textChallengeCount: number;
+  minorTells: number;
+  majorTells: number;
+  fatalTellReasons: string[];
 }
 
 export interface HumannessBreakdown {
@@ -30,6 +33,7 @@ export function aggregate(
   preamble: PreambleRecord | null = null,
   honeytokens: Honeytokens = { visible: [], hidden: [] },
   textChallengeCount = 0,
+  tells: readonly BotTell[] = [],
 ): SessionAggregates {
   const latencies = perChallenge
     .map((s) => s.timeToFirstInputMs)
@@ -47,6 +51,9 @@ export function aggregate(
     preamble,
     honeytokens,
     textChallengeCount,
+    minorTells: tells.filter((t) => t.severity === 'minor').length,
+    majorTells: tells.filter((t) => t.severity === 'major').length,
+    fatalTellReasons: tells.filter((t) => t.severity === 'fatal').map((t) => t.reason),
   };
 }
 
@@ -63,6 +70,8 @@ export function hardFails(a: SessionAggregates): string[] {
     fails.push('answers submitted faster than physically possible');
   if (a.textChallengeCount >= 3 && a.keyIntervalIqrMs !== null && a.keyIntervalIqrMs < 2)
     fails.push('typing with no rhythm variance across many fields');
+  for (const r of a.fatalTellReasons) fails.push(r);
+  if (a.majorTells >= 2) fails.push('multiple behavioural tells failed');
   return fails;
 }
 
@@ -122,6 +131,9 @@ export function humanness(a: SessionAggregates): HumannessBreakdown {
 
   if (a.totalHesitations === 0) add('never hesitated', -10);
 
+  if (a.majorTells > 0) add(`${a.majorTells} behavioural tell(s) failed`, -24 * a.majorTells);
+  if (a.minorTells > 0) add(`${a.minorTells} minor behavioural tell(s)`, -8 * a.minorTells);
+
   const p = a.preamble;
   if (p) {
     if (p.declaredAgent) add('declared itself an automated agent', -40);
@@ -143,9 +155,14 @@ export function empathyScore(sum: number, min: number, max: number): number {
   return clamp(Math.round(((sum - min) / (max - min)) * 100), 0, 100);
 }
 
-export function verdict(humannessScore: number, empathy: number): Verdict {
-  if (humannessScore >= 55 && empathy >= 50) return 'HUMAN';
-  if (humannessScore < 40 || empathy < 30) return 'REPLICANT';
+/**
+ * Verdict is driven by behavioural authenticity, not by the empathy answers an
+ * LLM can trivially ace. Empathy only pulls a borderline run toward
+ * INCONCLUSIVE; it can never, on its own, certify a run as human.
+ */
+export function verdict(humannessScore: number, empathy: number, majorTells = 0): Verdict {
+  if (humannessScore < 45 || majorTells >= 2) return 'REPLICANT';
+  if (humannessScore >= 62 && majorTells === 0 && empathy >= 25) return 'HUMAN';
   return 'INCONCLUSIVE';
 }
 
@@ -175,7 +192,7 @@ export function score(
   const h = humanness(a);
   const e = empathyScore(empathySum, empathyMin, empathyMax);
   const fails = hardFails(a);
-  const v = fails.length > 0 ? 'REPLICANT' : verdict(h.score, e);
+  const v = fails.length > 0 ? 'REPLICANT' : verdict(h.score, e, a.majorTells);
   return {
     empathy: e,
     humanness: fails.length > 0 ? Math.min(h.score, 39) : h.score,

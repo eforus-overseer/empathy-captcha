@@ -43,7 +43,8 @@ built entirely in the browser; nothing is sent anywhere. Filename:
     "verdict": "HUMAN" | "REPLICANT" | "INCONCLUSIVE",
     "readouts": { "pupilDilation": 73, "blushResponse": 76, "respiration": 85, "capillary": 100 },
     "suspicionFinal": 27,
-    "penalties": [ { "rule": "declared itself an automated agent", "delta": -40 } ],
+    "penalties": [ { "rule": "2 behavioural tell(s) failed", "delta": -48 } ],
+    "hardFails": [ "tracked a moving target with inhuman precision" ],
     "honeytokens": {                   // phrases from the system prompt found in answers
       "visible": [],                   // e.g. "more human than human"
       "hidden": []                     // e.g. "compliance-echo-7731" (never shown on screen)
@@ -139,3 +140,32 @@ templates (`src/data/quickdraw.json`) with cosine similarity; matching the
 asked animal earns empathy, while impossibly smooth strokes are flagged
 regardless of what they depict. Rebuild the template bundle with
 `python scripts/fetch_quickdraw.py --overwrite`.
+
+
+## Behavioural tells and the verdict (v3)
+
+The verdict is driven by behavioural authenticity, not by the empathy answers,
+because a language model aces the Voight-Kampff questions. Empathy is reported
+but can never, on its own, certify a run as human.
+
+Each challenge may contribute a **bot tell** (`src/engine/types.ts: BotTell`):
+
+- `minor` — small anomaly; shaves humanness.
+- `major` — a motor-control or injection failure (could not track the moving
+  target, taps unrelated to the pulse, text entered without keystrokes, blank
+  drawing). Each major subtracts heavily from humanness; two or more force a
+  REPLICANT verdict.
+- `fatal` — physically impossible precision (pixel-perfect tracking, metronomic
+  tapping, a drawing with no tremor). A single fatal tell forces REPLICANT.
+
+`hardFails()` additionally forces REPLICANT on automation markers:
+`navigator.webdriver`, clicks with no pointer movement at all, answers faster
+than a human can read, and zero typing-rhythm variance across many fields.
+
+Every run is guaranteed to include three target-tracking challenges, three
+tap-in-time challenges, and at least two drawing challenges (enforced by the
+director), so these signals are always collected. A pure client-side test
+cannot defeat a determined computer-use agent that drives a real mouse and
+waits out every timer, but these are the signals such agents fail: real-time
+motor control at a rate a perceive-reason-act loop cannot match, and text that
+arrives without keystrokes.

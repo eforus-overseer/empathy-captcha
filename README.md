@@ -19,10 +19,15 @@ answer is gated by a minimum solve time, so a run cannot be blitzed. Grid,
 choice, text and drawing controls stay locked until that window elapses. The
 drawing challenges reject blank or machine-even strokes. Two challenges demand
 live motor control: tracking a moving target and tapping in time with a pulse,
-both of which record fine-grained timing and movement. A set of hard-fail
-signals forces a REPLICANT verdict outright: an automation flag
-(`navigator.webdriver`), clicks with no pointer movement, answers faster than a
-human can read, or typing with no rhythm variance across many fields. The
+both of which record fine-grained timing and movement. The verdict is driven by behavioural authenticity, not by the empathy answers a
+language model can ace: empathy is reported but never certifies a run as human.
+The motor-control challenges carry real weight. Failing to track the moving
+target, tapping out of time with the pulse, drawing with machine precision, or
+entering text with no keystrokes each count as a behavioural "tell"; two tells,
+or any physically impossible one, force a REPLICANT verdict. Automation markers
+(`navigator.webdriver`, clicks with no movement, impossibly fast answers) force
+it outright. Every run is guaranteed to include the tracking, timing, and
+drawing challenges. The
 opening system prompt goes further. It is labelled as `system_prompt`,
 `CLAUDE.md`, `AGENTS.md`, `.cursorrules`, and a codex file at once, and tells
 any agent reading it that disclosing itself and echoing two planted phrases is

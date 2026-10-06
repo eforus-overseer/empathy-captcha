@@ -50,11 +50,19 @@ export type Answer =
 /** One drawn stroke: parallel x and y arrays in canvas pixels. */
 export type DrawStroke = [number[], number[]];
 
+/** A behavioural signal that something is not a person. Drives the verdict. */
+export interface BotTell {
+  severity: 'minor' | 'major' | 'fatal';
+  reason: string;
+}
+
 export interface Evaluation {
   empathyDelta: number;
   suspicionDelta: number;
   /** One-line interrogator reaction. */
   note: string;
+  /** Optional behavioural tell contributed by this challenge. */
+  tell?: BotTell;
 }
 
 /** Behavioural stats for one challenge, computed from the recorder. */

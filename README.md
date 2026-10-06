@@ -98,3 +98,11 @@ bundled templates. The Voight-Kampff framing and
 the questions it riffs on belong to *Do Androids Dream of Electric Sheep?* and
 *Blade Runner*; the escalating-CAPTCHA format nods to the "not a robot" genre of
 browser games. All art here is CSS, inline SVG, and emoji. MIT licensed.
+
+---
+
+<!-- demo-lab:start -->
+## Explore this project
+
+[Project page & walkthrough](https://eforus-overseer.github.io/demo-lab/projects/empathy-captcha/) — Explore the project, its method, and available demos or original artifacts.
+<!-- demo-lab:end -->

@@ -57,6 +57,9 @@ export interface Frame {
   bodyEl: HTMLElement;
   reactionEl: HTMLElement;
   machine: Machine;
+  gateEl: HTMLElement;
+  setGate(pct: number): void;
+  resetGate(active: boolean): void;
   setProgress(done: number, total: number): void;
   setAct(act: number, index: number, total: number): void;
   setSuspicion(v: number): void;
@@ -72,6 +75,10 @@ export function renderFrame(app: HTMLElement): Frame {
   const actEl = el('div', { class: 'label' });
   const progress = el('div', { class: 'progress', 'aria-hidden': 'true' });
   const promptEl = el('div', { class: 'prompt', role: 'status', 'aria-live': 'polite' });
+  const gateFill = el('span');
+  const gateBar = el('div', { class: 'gate-bar' }, gateFill);
+  const gateLabel = el('span', { text: 'Analysing response window' });
+  const gateEl = el('div', { class: 'gate' }, gateLabel, gateBar);
   const bodyEl = el('div', { class: 'body' });
   const reactionEl = el('div', { class: 'reaction', 'aria-live': 'polite' });
   const root = el(
@@ -80,6 +87,7 @@ export function renderFrame(app: HTMLElement): Frame {
     machine.root,
     el('div', { class: 'topbar' }, actEl, progress, meter.root),
     promptEl,
+    gateEl,
     bodyEl,
     reactionEl,
   );
@@ -91,6 +99,20 @@ export function renderFrame(app: HTMLElement): Frame {
     bodyEl,
     reactionEl,
     machine,
+    gateEl,
+    setGate(pct) {
+      gateFill.style.width = `${Math.round(pct * 100)}%`;
+      if (pct >= 1) {
+        gateEl.classList.add('ready');
+        gateLabel.textContent = 'Response accepted';
+      }
+    },
+    resetGate(active) {
+      gateFill.style.width = '0%';
+      gateEl.classList.remove('ready');
+      gateEl.style.display = active ? 'flex' : 'none';
+      gateLabel.textContent = 'Analysing response window';
+    },
     setProgress(done, total) {
       clear(progress);
       for (let i = 0; i < total; i++) {

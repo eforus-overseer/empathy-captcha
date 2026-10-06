@@ -1,4 +1,5 @@
 import type { DrawConfig } from '../../challenges/configs';
+import { drawStats } from '../../engine/draw';
 import type { DrawStroke } from '../../engine/types';
 import { el } from '../dom';
 import type { Renderer } from './context';
@@ -111,10 +112,26 @@ export const renderDraw: Renderer<DrawConfig> = (host, cfg, ctx) =>
       }
     });
     const done = el('button', { class: 'btn primary', type: 'button', text: 'Done' });
-    done.addEventListener('click', () =>
-      resolve({ kind: 'draw', strokes: strokes.map(([xs, ys]) => [[...xs], [...ys]]), durationMs: Math.round(performance.now() - t0), pointerType }),
-    );
+    const errEl = el('div', { class: 'error', role: 'alert' });
+    done.setAttribute('disabled', '');
+    ctx.gate.onReady(() => done.removeAttribute('disabled'));
+    done.addEventListener('click', () => {
+      if (!ctx.gate.ready()) return;
+      const out = strokes.map(([xs, ys]) => [[...xs], [...ys]] as [number[], number[]]);
+      const st = drawStats(out, performance.now() - t0);
+      // reject blank or machine-perfect input
+      const minPoints = cfg.mode === 'cursive' ? 6 : 10;
+      if (st.pointCount < minPoints) {
+        errEl.textContent = 'Not enough recorded. Draw it properly.';
+        return;
+      }
+      if (st.wobble < 0.03 && st.speedVariation < 0.06 && st.pointCount > 2) {
+        errEl.textContent = 'That stroke is too even to be a hand. Try again.';
+        return;
+      }
+      resolve({ kind: 'draw', strokes: out, durationMs: Math.round(performance.now() - t0), pointerType });
+    });
 
     const hint = el('span', { class: 'hint', text: cfg.mode === 'cursive' ? 'Use your finger on the trackpad, or the mouse.' : 'A few lines is plenty.' });
-    host.append(el('div', { class: 'draw-wrap' }, canvas, hint, el('div', { class: 'row' }, clearBtn, done)));
+    host.append(el('div', { class: 'draw-wrap' }, canvas, hint, errEl, el('div', { class: 'row' }, clearBtn, done)));
   });

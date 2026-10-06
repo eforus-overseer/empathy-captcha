@@ -6,6 +6,7 @@ import { act2Extra } from './act2-extra';
 import { act3 } from './act3-baseline';
 import { act3Extra } from './act3-extra';
 import { actDraw } from './act-draw';
+import { actBiometric } from './act-biometric';
 
 export const registry: readonly Challenge[] = [
   ...act1,
@@ -15,6 +16,7 @@ export const registry: readonly Challenge[] = [
   ...act3,
   ...act3Extra,
   ...actDraw,
+  ...actBiometric,
 ];
 
 export function byId(id: string): Challenge | undefined {

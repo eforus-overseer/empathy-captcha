@@ -1,6 +1,6 @@
 # CLAUDE.md — empathy-captcha
 
-Voight-Kampff styled CAPTCHA-parody game: a scrollable "system prompt" preamble then 100 challenges (pool of 116), with client-only behavioural telemetry.
+Voight-Kampff styled behavioural assessment: a scrollable "system prompt" preamble then 100 gated challenges (pool of 122), with client-only telemetry and real anti-bot gating. Clinical graphite instrument styling, IBM Plex type, inline line icons (no emoji).
 Static site, Vite + TypeScript, deployed to GitHub Pages from `main`.
 Live: https://eforus-overseer.github.io/empathy-captcha/
 
@@ -28,6 +28,13 @@ renderers, one per type, each `(host, config, ctx) => Promise<Answer>`.
 100 challenges typewrite the prompt, attach the recorder, render, evaluate,
 react, and finally score and show the verdict.
 
+Anti-bot gating is real, not cosmetic: each challenge has a minimum solve time
+(`minSolveMs`, defaults in `src/components/gate.ts`) during which submit
+controls stay disabled; draw challenges reject blank/machine-even strokes;
+`trace` and `rhythm` challenges require live motor timing; and `hardFails()` in
+`src/engine/scoring.ts` forces REPLICANT on automation markers. Keep these pure
+and tested.
+
 The opening preamble (`src/components/preamble.ts`) is a detector: it is
 labelled as system_prompt / CLAUDE.md / AGENTS.md / .cursorrules / codex, gates
 Begin on scroll-to-end, records read behaviour and agent self-declaration, and
@@ -46,7 +53,7 @@ Add challenges per `docs/challenge-authoring.md`. Transcript format in
 - Challenge ids are stable identifiers that appear in exported data. Never rename one; add a new id instead.
 - Per-run plan is 25/45/30 challenges; the pool must stay at least that size per act (tests enforce it). Anchors: `not-a-robot` first, `tortoise` in act 2, `not-sure-anymore` last.
 - Every `evaluate` must stay inside its `empathyRange` (tests enforce this).
-- All visuals are CSS, inline SVG, or emoji. No film assets, no real faces, no external images. Sketch templates come from the Quick, Draw! dataset (CC BY 4.0), attributed in README.
+- All visuals are CSS, inline SVG, and line icons from `src/components/icons.ts` (Lucide ISC + original drawings). No emoji, no raster images, no film assets, no real faces, no copyrighted characters. Sketch templates come from Quick, Draw! (CC BY 4.0, attributed in README).
 - Humour is PG. No slurs, sexual content, or gore. The interrogator is dry, never cruel about the player as a person.
 - `prefers-reduced-motion` must keep working: no typewriter, no flicker, checkbox does not dodge.
 

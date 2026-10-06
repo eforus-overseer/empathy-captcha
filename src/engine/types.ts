@@ -10,7 +10,9 @@ export type ChallengeType =
   | 'hold'
   | 'slider'
   | 'wait'
-  | 'draw';
+  | 'draw'
+  | 'trace'
+  | 'rhythm';
 
 export type Tag = 'anchor' | 'harsh' | 'silly' | 'behavioural';
 
@@ -28,6 +30,21 @@ export type Answer =
       strokes: DrawStroke[]; // [xs, ys] per stroke, canvas px
       durationMs: number;
       pointerType: string; // 'mouse' | 'touch' | 'pen' | ...
+    }
+  | {
+      kind: 'trace';
+      completed: boolean;
+      meanErrorPx: number; // mean distance from the moving target
+      coverage: number; // 0..1 fraction of time on target
+      sampleCount: number;
+    }
+  | {
+      kind: 'rhythm';
+      taps: number;
+      expected: number;
+      offsetsMs: number[]; // signed offset from each beat
+      offsetIqrMs: number | null;
+      meanAbsOffsetMs: number;
     };
 
 /** One drawn stroke: parallel x and y arrays in canvas pixels. */
@@ -66,6 +83,8 @@ export interface Challenge<C = unknown> {
   config: C;
   /** Theoretical empathy range this challenge can award, for normalisation. */
   empathyRange: [min: number, max: number];
+  /** Minimum wall-clock time (ms) before an answer may be submitted. Gates bots. */
+  minSolveMs?: number;
   evaluate(answer: Answer, stats: ChallengeStats): Evaluation;
 }
 

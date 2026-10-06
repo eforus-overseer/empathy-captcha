@@ -1,8 +1,9 @@
 import type { GridConfig } from '../../challenges/configs';
 import { el } from '../dom';
+import { iconEl } from '../icons';
 import type { Renderer } from './context';
 
-export const renderGrid: Renderer<GridConfig> = (host, cfg) =>
+export const renderGrid: Renderer<GridConfig> = (host, cfg, ctx) =>
   new Promise((resolve) => {
     const selected = new Set<number>();
     const grid = el('div', { class: 'grid', role: 'group' });
@@ -12,8 +13,9 @@ export const renderGrid: Renderer<GridConfig> = (host, cfg) =>
         type: 'button',
         'aria-pressed': 'false',
         'aria-label': t.label,
-        text: t.glyph ?? '',
       });
+      if (t.icon) tile.append(iconEl(t.icon, 'tile-icon'));
+      else if (t.glyph) tile.append(el('span', { class: 'tile-glyph', text: t.glyph }));
       tile.addEventListener('click', () => {
         if (cfg.mode === 'single') {
           selected.clear();
@@ -32,6 +34,8 @@ export const renderGrid: Renderer<GridConfig> = (host, cfg) =>
     });
     grid.append(...tiles);
     const verify = el('button', { class: 'btn primary', type: 'button', text: cfg.submitLabel ?? 'Verify' });
+    verify.setAttribute('disabled', '');
+    ctx.gate.onReady(() => verify.removeAttribute('disabled'));
     verify.addEventListener('click', () => resolve({ kind: 'grid', selected: [...selected].sort((a, b) => a - b) }));
     host.append(grid, verify);
   });

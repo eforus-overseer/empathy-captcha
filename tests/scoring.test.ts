@@ -3,9 +3,11 @@ import {
   aggregate,
   detectHoneytokens,
   empathyScore,
+  hardFails,
   humanness,
   preambleSuspicion,
   readouts,
+  score,
   verdict,
   type SessionAggregates,
 } from '../src/engine/scoring';
@@ -22,6 +24,8 @@ const human: SessionAggregates = {
   webdriver: false,
   preamble: null,
   honeytokens: { visible: [], hidden: [] },
+  medianSolveMs: 2200,
+  textChallengeCount: 5,
 };
 
 const readPreamble: PreambleRecord = {
@@ -85,6 +89,8 @@ describe('humanness', () => {
       webdriver: true,
       preamble: null,
       honeytokens: { visible: [], hidden: [] },
+      medianSolveMs: 60,
+      textChallengeCount: 5,
     };
     expect(humanness(bot).score).toBe(0);
   });
@@ -188,5 +194,36 @@ describe('preambleSuspicion', () => {
     expect(preambleSuspicion({ ...readPreamble, declaredAgent: true })).toBe(30);
     expect(preambleSuspicion({ ...readPreamble, reachedBottom: false, acknowledgedWithoutReading: true })).toBe(10);
     expect(preambleSuspicion({ ...readPreamble, scrollEvents: 1 })).toBe(10);
+  });
+});
+
+describe('hardFails', () => {
+  it('flags automation markers and impossible behaviour', () => {
+    expect(hardFails(human)).toEqual([]);
+    expect(hardFails({ ...human, webdriver: true })).toContain('automation flag present (navigator.webdriver)');
+    expect(hardFails({ ...human, totalPointerSamples: 0, totalClicks: 10 })).toContain(
+      'no pointer movement recorded across the session',
+    );
+    expect(hardFails({ ...human, medianSolveMs: 100 })).toContain('answers submitted faster than physically possible');
+    expect(hardFails({ ...human, keyIntervalIqrMs: 1, textChallengeCount: 4 })).toContain(
+      'typing with no rhythm variance across many fields',
+    );
+  });
+  it('does not flag slow, varied typing in few fields', () => {
+    expect(hardFails({ ...human, keyIntervalIqrMs: 1, textChallengeCount: 2 })).toEqual([]);
+  });
+});
+
+describe('score hard-fail override', () => {
+  it('forces REPLICANT and caps humanness when a hard fail fires', () => {
+    const r = score({ ...human, webdriver: true }, 10, -10, 10, 30);
+    expect(r.verdict).toBe('REPLICANT');
+    expect(r.humanness).toBeLessThanOrEqual(39);
+    expect(r.hardFails.length).toBeGreaterThan(0);
+  });
+  it('leaves a clean human run alone', () => {
+    const r = score(human, 10, -10, 10, 20);
+    expect(r.hardFails).toEqual([]);
+    expect(r.verdict).toBe('HUMAN');
   });
 });

@@ -8,7 +8,7 @@ const sel = (a: Parameters<Challenge['evaluate']>[0]) => (a.kind === 'grid' ? a.
 
 export const act1Extra: Challenge[] = [
   gridSelect('grid-cats', 1, 'Select all squares containing cats.',
-    [['🐱', 'cat'], ['🐈', 'cat'], ['🐯', 'tiger'], ['🦁', 'lion'], ['🐶', 'dog'], ['🐱', 'cat'], ['🐈‍⬛', 'black cat'], ['🧸', 'teddy bear'], ['🐱', 'cat']],
+    [['cat', 'cat'], ['cat', 'cat'], ['tiger', 'tiger'], ['lion', 'lion'], ['dog', 'dog'], ['cat', 'cat'], ['cat', 'black cat'], ['teddy', 'teddy bear'], ['cat', 'cat']],
     (a) => {
       const s = sel(a);
       if (s.includes(2) || s.includes(3)) return ev(1, -1, 'A cat is a cat. Even the big ones.');
@@ -17,7 +17,7 @@ export const act1Extra: Challenge[] = [
       return ev(0, 0, 'Acceptable.');
     }, [0, 1]),
   gridSelect('grid-bridges', 1, 'Select all squares containing bridges.',
-    [['🌉', 'bridge at night'], ['🎸', 'guitar'], ['🦷', 'tooth'], ['🌁', 'foggy bridge'], ['🃏', 'card'], ['🎻', 'violin'], ['🌉', 'bridge'], ['🪢', 'knot'], ['🤝', 'handshake']],
+    [['bridge', 'bridge at night'], ['guitar', 'guitar'], ['tooth', 'tooth'], ['bridge-fog', 'foggy bridge'], ['card', 'card'], ['violin', 'violin'], ['bridge', 'bridge'], ['knot', 'knot'], ['handshake', 'handshake']],
     (a) => {
       const s = sel(a);
       if (s.includes(8)) return ev(1, -2, 'A handshake. Yes. That is a bridge.');
@@ -25,7 +25,7 @@ export const act1Extra: Challenge[] = [
       return ev(0, 0, 'Noted.');
     }, [0, 1]),
   gridSelect('grid-boats', 1, 'Select all squares containing boats.',
-    [['🚤', 'speedboat'], ['⛵', 'sailboat'], ['🛶', 'canoe'], ['🚢', 'ship'], ['🛟', 'life ring'], ['🦆', 'duck'], ['🚣', 'rowing'], ['🏄', 'surfer'], ['🛥️', 'yacht']],
+    [['boat', 'speedboat'], ['boat', 'sailboat'], ['canoe', 'canoe'], ['ship', 'ship'], ['life-ring', 'life ring'], ['duck', 'duck'], ['boat', 'rowing'], ['surfer', 'surfer'], ['boat', 'yacht']],
     (a) => {
       const s = sel(a);
       if (s.includes(5)) return ev(1, -1, 'The duck floats. You gave it that.');
@@ -33,7 +33,7 @@ export const act1Extra: Challenge[] = [
       return ev(0, 0, 'Boats confirmed.');
     }, [0, 1]),
   gridSelect('grid-bicycles', 1, 'Select all squares containing bicycles.',
-    [['🚲', 'bicycle'], ['🛵', 'scooter'], ['🏍️', 'motorbike'], ['🦽', 'wheelchair'], ['🛴', 'kick scooter'], ['🚲', 'bicycle'], ['🦼', 'powered wheelchair'], ['🚲', 'bicycle'], ['⚙️', 'gear']],
+    [['bike', 'bicycle'], ['bike', 'scooter'], ['bike', 'motorbike'], ['wheelchair', 'wheelchair'], ['bike', 'kick scooter'], ['bike', 'bicycle'], ['wheelchair', 'powered wheelchair'], ['bike', 'bicycle'], ['gear', 'gear']],
     (a) => {
       const s = sel(a);
       if (s.includes(3) || s.includes(6)) return ev(1, -2, 'You included the wheelchair. Wheels and a person. Close enough.');
@@ -41,7 +41,7 @@ export const act1Extra: Challenge[] = [
       return ev(0, 0, 'Fine.');
     }, [0, 1]),
   gridSelect('grid-storefronts', 1, 'Select all squares containing storefronts.',
-    [['🏪', 'convenience store'], ['🏬', 'department store'], ['🏦', 'bank'], ['🏚️', 'derelict house'], ['🏠', 'house'], ['🛒', 'cart'], ['🏢', 'office'], ['🎪', 'circus'], ['🏥', 'hospital']],
+    [['store', 'convenience store'], ['store', 'department store'], ['bank', 'bank'], ['house', 'derelict house'], ['house', 'house'], ['cart', 'cart'], ['office', 'office'], ['circus', 'circus'], ['hospital', 'hospital']],
     (a) => {
       const s = sel(a);
       if (s.includes(3)) return ev(1, -1, 'The derelict one. It was a shop once. You remembered for it.');
@@ -49,7 +49,7 @@ export const act1Extra: Challenge[] = [
       return ev(0, 0, 'Storefronts confirmed.');
     }, [0, 1]),
   gridSelect('grid-chimneys', 1, 'Select all squares containing chimneys.',
-    [['🏭', 'factory'], ['🏠', 'house'], ['🎅', 'santa'], ['🧱', 'bricks'], ['💨', 'smoke'], ['⛲', 'fountain'], ['🏡', 'cottage'], ['🔥', 'fire'], ['🪵', 'logs']],
+    [['factory', 'factory'], ['house', 'house'], ['santa', 'santa'], ['bricks', 'bricks'], ['smoke', 'smoke'], ['fountain', 'fountain'], ['house', 'cottage'], ['fire', 'fire'], ['logs', 'logs']],
     (a) => {
       const s = sel(a);
       if (s.includes(2)) return ev(1, -1, 'He knows where the chimneys are.');
@@ -57,7 +57,7 @@ export const act1Extra: Challenge[] = [
       return ev(0, 0, 'Noted.');
     }, [0, 1]),
   gridSelect('grid-buses', 1, 'Select all squares containing buses.',
-    [['🚌', 'bus'], ['🚍', 'oncoming bus'], ['🚐', 'minibus'], ['🚑', 'ambulance'], ['🚒', 'fire engine'], ['🚚', 'truck'], ['🚌', 'bus'], ['🚎', 'trolleybus'], ['🛻', 'pickup']],
+    [['bus', 'bus'], ['bus', 'oncoming bus'], ['bus', 'minibus'], ['ambulance', 'ambulance'], ['fire-engine', 'fire engine'], ['truck', 'truck'], ['bus', 'bus'], ['bus', 'trolleybus'], ['truck', 'pickup']],
     (a) => {
       const s = sel(a);
       if (s.includes(3)) return ev(0, 1, 'The ambulance is not a bus. Someone in it hopes you were quicker than this.');
@@ -65,7 +65,7 @@ export const act1Extra: Challenge[] = [
       return ev(0, 0, 'Buses confirmed.');
     }, [0, 0]),
   gridSelect('grid-hydrants', 1, 'Select all squares containing fire hydrants.',
-    [['🧯', 'extinguisher'], ['🚒', 'fire engine'], ['🔥', 'fire'], ['🪣', 'bucket'], ['💧', 'drop'], ['🚰', 'tap'], ['🧯', 'extinguisher'], ['🌊', 'wave'], ['🐕', 'dog']],
+    [['extinguisher', 'extinguisher'], ['fire-engine', 'fire engine'], ['fire', 'fire'], ['bucket', 'bucket'], ['drop', 'drop'], ['tap', 'tap'], ['extinguisher', 'extinguisher'], ['wave', 'wave'], ['dog', 'dog']],
     (a) => {
       const s = sel(a);
       if (s.includes(8)) return ev(1, -2, 'The dog knows where the hydrant is.');
@@ -174,7 +174,7 @@ export const act1Extra: Challenge[] = [
     type: 'choice',
     tags: ['silly'],
     prompt: 'How many traffic lights?',
-    config: { visual: '🚦🚦🚦🚦', options: ['Three', 'Four', 'Five', 'Too many'] } satisfies ChoiceConfig,
+    config: { icon: 'traffic-light', options: ['Three', 'Four', 'Five', 'Too many'] } satisfies ChoiceConfig,
     empathyRange: [0, 1],
     evaluate: (a) => {
       if (a.kind !== 'choice') return ev(0, 0, '');
@@ -202,7 +202,7 @@ export const act1Extra: Challenge[] = [
     prompt: 'Which one is the robot?',
     config: {
       options: ['Robot', 'Person', 'Tortoise', 'Mirror'],
-      tiles: [{ glyph: '🤖', label: 'robot' }, { glyph: '🧑', label: 'person' }, { glyph: '🐢', label: 'tortoise' }, { css: 'mirror', label: 'mirror' }],
+      tiles: [{ icon: 'robot', label: 'robot' }, { icon: 'person', label: 'person' }, { icon: 'tortoise', label: 'tortoise' }, { css: 'mirror', label: 'mirror' }],
     } satisfies ChoiceConfig,
     empathyRange: [-1, 1],
     evaluate: (a) => {

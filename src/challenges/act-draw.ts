@@ -30,8 +30,8 @@ function cursive(id: string, act: 2 | 3, prompt: string, word: string | undefine
 }
 
 /** Draw an animal; compared against Quick, Draw! templates. */
-function sketch(id: string, act: 2 | 3, animal: string, glyph: string, prompt: string): Challenge {
-  const config: DrawConfig = { mode: 'sketch', target: animal, glyph };
+function sketch(id: string, act: 2 | 3, animal: string, icon: string, prompt: string): Challenge {
+  const config: DrawConfig = { mode: 'sketch', target: animal, icon };
   return {
     id,
     act,
@@ -61,10 +61,10 @@ export const actDraw: Challenge[] = [
   cursive('cursive-human', 2, "Write the word 'human' in cursive. Use your finger if you have a trackpad.", 'human', 'Human.'),
   cursive('cursive-sign', 3, 'Sign your name. Any name. The one you use when no one is watching.', undefined, 'Signed.'),
   cursive('cursive-sorry', 3, "Write 'sorry' in your own hand.", 'sorry', 'Sorry. We felt that.'),
-  sketch('sketch-sheep', 2, 'sheep', '🐑', 'Draw a sheep. Electric or otherwise.'),
-  sketch('sketch-cat', 2, 'cat', '🐈', 'Draw a cat from memory.'),
-  sketch('sketch-turtle', 2, 'sea turtle', '🐢', 'Draw the tortoise. You remember the tortoise.'),
-  sketch('sketch-bird', 3, 'bird', '🐦', 'Draw a bird. It hit the window earlier.'),
-  sketch('sketch-fish', 3, 'fish', '🐟', 'Draw the fish from the bowl.'),
-  sketch('sketch-dog', 3, 'dog', '🐕', 'Draw a dog. The old one, if you like.'),
+  sketch('sketch-sheep', 2, 'sheep', 'sheep', 'Draw a sheep. Electric or otherwise.'),
+  sketch('sketch-cat', 2, 'cat', 'cat', 'Draw a cat from memory.'),
+  sketch('sketch-turtle', 2, 'sea turtle', 'tortoise', 'Draw the tortoise. You remember the tortoise.'),
+  sketch('sketch-bird', 3, 'bird', 'bird', 'Draw a bird. It hit the window earlier.'),
+  sketch('sketch-fish', 3, 'fish', 'fish', 'Draw the fish from the bowl.'),
+  sketch('sketch-dog', 3, 'dog', 'dog', 'Draw a dog. The old one, if you like.'),
 ];

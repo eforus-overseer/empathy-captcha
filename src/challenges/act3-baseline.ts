@@ -9,7 +9,7 @@ export const act3: Challenge[] = [
     type: 'hold',
     tags: ['behavioural', 'silly'],
     prompt: 'Hold your cursor perfectly still while we show you an onion.',
-    config: { mode: 'still', durationMs: 6000, glyph: '🧅', stillThresholdPx: 14 } satisfies HoldConfig,
+    config: { mode: 'still', durationMs: 6000, glyph: 'mushroom', stillThresholdPx: 14 } satisfies HoldConfig,
     empathyRange: [0, 1],
     evaluate: (a) => {
       if (a.kind !== 'hold') return ev(0, 0, '');

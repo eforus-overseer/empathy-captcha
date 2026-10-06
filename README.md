@@ -7,16 +7,22 @@
 A Voight-Kampff machine that administers an escalating gauntlet of
 "I'm not a robot" CAPTCHA parodies. Three acts, 24 challenges, about 15 per
 run, picked by a suspicion meter that gets harsher as you look less human.
-The tortoise is in there. So is an onion, a wasp, a cursive signature pad, and a draw-the-animal canvas.
+The tortoise is in there. So is an onion, a wasp, a cursive signature pad, a draw-the-animal canvas, a moving target you have to track, and a pulse you have to tap in time with.
 
 At the end you get a verdict (HUMAN / REPLICANT / INCONCLUSIVE), a fake
 physiological readout, and a button to download the session transcript as JSON.
 
 ## Why it also exists
 
-The same behavioural signals the game jokes about are the cheap first-line
-signals bot detection actually uses: reaction latency, cursor-path
-straightness, keystroke rhythm, drawing wobble, and `navigator.webdriver`. The
+It is built to be hard to pass without a real body behind the cursor. Every
+answer is gated by a minimum solve time, so a run cannot be blitzed. Grid,
+choice, text and drawing controls stay locked until that window elapses. The
+drawing challenges reject blank or machine-even strokes. Two challenges demand
+live motor control: tracking a moving target and tapping in time with a pulse,
+both of which record fine-grained timing and movement. A set of hard-fail
+signals forces a REPLICANT verdict outright: an automation flag
+(`navigator.webdriver`), clicks with no pointer movement, answers faster than a
+human can read, or typing with no rhythm variance across many fields. The
 opening system prompt goes further. It is labelled as `system_prompt`,
 `CLAUDE.md`, `AGENTS.md`, `.cursorrules`, and a codex file at once, and tells
 any agent reading it that disclosing itself and echoing two planted phrases is

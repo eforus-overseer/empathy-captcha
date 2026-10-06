@@ -1,44 +1,47 @@
+/* Voight-Kampff analysis unit — clinical graphite rendering. */
 .machine {
   width: 100%;
-  max-width: 320px;
-  margin: 0 auto 10px;
+  max-width: 300px;
+  margin: 0 auto 14px;
   display: block;
 }
-.machine .bellows { fill: #231d12; stroke: var(--line); }
-.machine .body { fill: #2a2316; stroke: #4a3d22; }
-.machine .lens-ring { fill: none; stroke: var(--amber-dim); stroke-width: 2; }
-.machine .lens-glass { fill: #0a0d0f; }
+.machine .bellows { fill: var(--panel-2); stroke: var(--line-2); stroke-width: 1; }
+.machine .body { fill: var(--bg-2); stroke: var(--line-2); stroke-width: 1; }
+.machine .lens-ring { fill: none; stroke: var(--line-2); stroke-width: 1.5; }
+.machine .lens-glass { fill: #06080a; }
 .machine .iris {
-  fill: var(--amber);
-  filter: drop-shadow(0 0 6px var(--amber-glow));
-  transition: r 600ms cubic-bezier(0.2, 0.8, 0.2, 1), fill 600ms;
+  fill: var(--accent);
+  opacity: 0.9;
+  transition: r 700ms cubic-bezier(0.2, 0.8, 0.2, 1), fill 500ms, opacity 500ms;
 }
-.machine .iris.hot { fill: #e0665c; filter: drop-shadow(0 0 8px var(--red-glow)); }
-.machine .pupil { fill: #000; transition: r 600ms cubic-bezier(0.2, 0.8, 0.2, 1); }
-.machine .glint { fill: var(--cyan); opacity: 0.8; }
-.machine .gauge-face { fill: #0f0c08; stroke: var(--line); }
+.machine .iris.hot { fill: var(--red); }
+.machine .pupil { fill: #000; transition: r 700ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+.machine .glint { fill: var(--cyan); opacity: 0.7; }
+.machine .gauge-face { fill: #06080a; stroke: var(--line-2); stroke-width: 1; }
 .machine .needle {
-  stroke: var(--red);
+  stroke: var(--accent);
   stroke-width: 1.5;
   stroke-linecap: round;
   transform-origin: 250px 70px;
-  transition: transform 800ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 900ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.machine .tick { stroke: var(--amber-dim); stroke-width: 1; }
-.machine .lamp { fill: #3a1a12; transition: fill 300ms; }
-.machine .lamp.on { fill: #ff5a4a; filter: drop-shadow(0 0 4px var(--red-glow)); }
-.machine .legend { fill: var(--muted); font: 8px var(--mono); letter-spacing: 0.15em; }
+.machine .tick { stroke: var(--faint); stroke-width: 1; }
+.machine .lamp { fill: #2a1512; transition: fill 300ms; }
+.machine .lamp.on { fill: var(--red); filter: drop-shadow(0 0 4px var(--red-glow)); }
+.machine .legend { fill: var(--faint); font: 7px var(--sans); letter-spacing: 0.18em; }
 
 .meter {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 11px;
-  letter-spacing: 0.18em;
+  gap: 9px;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
   color: var(--muted);
   text-transform: uppercase;
 }
-.meter .bar { width: 120px; }
+.meter .bar { width: 110px; }
 
 @media (prefers-reduced-motion: reduce) {
   .machine .iris, .machine .pupil, .machine .needle { transition: none; }

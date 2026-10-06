@@ -26,6 +26,9 @@ const human: SessionAggregates = {
   honeytokens: { visible: [], hidden: [] },
   medianSolveMs: 2200,
   textChallengeCount: 5,
+  minorTells: 0,
+  majorTells: 0,
+  fatalTellReasons: [],
 };
 
 const readPreamble: PreambleRecord = {
@@ -91,6 +94,9 @@ describe('humanness', () => {
       honeytokens: { visible: [], hidden: [] },
       medianSolveMs: 60,
       textChallengeCount: 5,
+      minorTells: 0,
+      majorTells: 0,
+      fatalTellReasons: [],
     };
     expect(humanness(bot).score).toBe(0);
   });
@@ -113,12 +119,13 @@ describe('empathyScore', () => {
 });
 
 describe('verdict', () => {
-  it('matches the matrix', () => {
-    expect(verdict(80, 70)).toBe('HUMAN');
-    expect(verdict(30, 70)).toBe('REPLICANT');
-    expect(verdict(80, 10)).toBe('REPLICANT');
-    expect(verdict(50, 70)).toBe('INCONCLUSIVE');
-    expect(verdict(80, 40)).toBe('INCONCLUSIVE');
+  it('is driven by humanness and tells, not empathy', () => {
+    expect(verdict(80, 70, 0)).toBe('HUMAN');
+    expect(verdict(30, 70, 0)).toBe('REPLICANT'); // low humanness
+    expect(verdict(80, 10, 0)).toBe('INCONCLUSIVE'); // cold but not a bot
+    expect(verdict(50, 70, 0)).toBe('INCONCLUSIVE');
+    expect(verdict(80, 70, 2)).toBe('REPLICANT'); // two behavioural tells
+    expect(verdict(90, 90, 1)).toBe('INCONCLUSIVE'); // one tell blocks HUMAN
   });
 });
 

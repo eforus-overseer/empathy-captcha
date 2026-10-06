@@ -1,6 +1,6 @@
 import type { Challenge } from '../engine/types';
 import type { ChoiceConfig, GridConfig, HoldConfig, TextConfig } from './configs';
-import { ev, textOf } from './helpers';
+import { ev, tell, textOf } from './helpers';
 
 const tortoiseTiles = Array.from({ length: 9 }, () => ({ icon: 'tortoise', label: 'tortoise on its back' }));
 
@@ -161,8 +161,8 @@ export const act2: Challenge[] = [
     evaluate: (a, s) => {
       const t = textOf(a).toLowerCase().replace(/[^a-z]/g, '');
       if (t !== 'cellsinterlinked') return ev(0, 3, 'Not exactly. Again, later.');
-      if (s.keyIntervalIqrMs !== null && s.keyIntervalIqrMs < 5) return ev(0, 15, 'Every keystroke the same distance apart.');
-      if (s.keyIntervalIqrMs === null) return ev(0, 12, 'You did not type that. It arrived whole.');
+      if (s.keyIntervalIqrMs !== null && s.keyIntervalIqrMs < 5) return ev(0, 15, 'Every keystroke the same distance apart.', tell('major', 'keystrokes with no rhythm variance'));
+      if (s.keyIntervalIqrMs === null) return ev(0, 12, 'You did not type that. It arrived whole.', tell('major', 'text appeared without keystrokes'));
       return ev(1, -2, 'Within cells interlinked. Within one stem.');
     },
   },

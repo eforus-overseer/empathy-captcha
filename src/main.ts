@@ -75,6 +75,7 @@ async function run(seed: number, agentLabel: string | null, all: boolean): Promi
   const allKeyIntervals: number[] = [];
   const answers: (import('./engine/types').Answer | null)[] = [];
   let textChallengeCount = 0;
+  const tells: import('./engine/types').BotTell[] = [];
   const reduced = prefersReducedMotion();
   const toneRng = mulberry32(seed ^ 0x9e3779b9);
 
@@ -101,6 +102,11 @@ async function run(seed: number, agentLabel: string | null, all: boolean): Promi
     transcript.challenges.push(record);
     allKeyIntervals.push(...record.keyIntervalsMs);
     answers.push(answer);
+    if (evaluation.tell) tells.push(evaluation.tell);
+    // generic: non-empty text with no keystrokes recorded = pasted or injected
+    if (c.type === 'text' && answer.kind === 'text' && answer.text.trim().length > 2 && record.keyIntervalsMs.length === 0) {
+      tells.push({ severity: 'major', reason: 'text entered without keystrokes' });
+    }
 
     director.adjustSuspicion(evaluation.suspicionDelta);
     empathySum += evaluation.empathyDelta;
@@ -126,6 +132,7 @@ async function run(seed: number, agentLabel: string | null, all: boolean): Promi
     preamble,
     honeytokens,
     textChallengeCount,
+    tells,
   );
   const s = score(agg, empathySum, empathyMin, empathyMax, director.suspicion);
   transcript.scores = {

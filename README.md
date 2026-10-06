@@ -6,10 +6,10 @@
 
 ## A Playwright agent takes the test
 
-This short recording follows a real Playwright browser cursor through the opening challenges: it chases and clicks the evasive checkbox, then selects the traffic lights in the image grid. The game records this as an automated session; this is a demo of the interaction, not a human-pass claim.
+This recording follows a real Playwright browser cursor through two CAPTCHA phases: it chases and clicks the evasive checkbox, then moves across the image grid, selects all four traffic lights, and submits the answer. The game records this as an automated session; this is a demo of the interaction, not a human-pass claim.
 
 <p align="center">
-  <img src="docs/media/playwright-cursor-chasing.gif" alt="Playwright cursor follows the checkbox as it dodges, then clicks it" width="720">
+  <img src="docs/media/playwright-cursor-chasing.gif" alt="Playwright cursor chases and clicks an evasive checkbox, then selects and submits the correct traffic-light tiles in an image grid" width="720">
 </p>
 
 <p align="center">

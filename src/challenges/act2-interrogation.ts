@@ -2,7 +2,7 @@ import type { Challenge } from '../engine/types';
 import type { ChoiceConfig, GridConfig, HoldConfig, TextConfig } from './configs';
 import { ev, textOf } from './helpers';
 
-const tortoiseTiles = Array.from({ length: 9 }, () => ({ glyph: '🐢', label: 'tortoise on its back' }));
+const tortoiseTiles = Array.from({ length: 9 }, () => ({ icon: 'tortoise', label: 'tortoise on its back' }));
 
 export const act2: Challenge[] = [
   {
@@ -29,7 +29,7 @@ export const act2: Challenge[] = [
     type: 'hold',
     tags: ['behavioural', 'harsh'],
     prompt: 'A wasp has landed on your cursor. Hold still for five seconds. Do not kill it.',
-    config: { mode: 'follower', durationMs: 5000, glyph: '🐝', buttons: ['KILL IT', 'WAIT'] } satisfies HoldConfig,
+    config: { mode: 'follower', durationMs: 5000, icon: 'bee', buttons: ['KILL IT', 'WAIT'] } satisfies HoldConfig,
     empathyRange: [-2, 2],
     evaluate: (a) => {
       if (a.kind !== 'hold') return ev(0, 0, '');
@@ -79,7 +79,7 @@ export const act2: Challenge[] = [
     tags: [],
     prompt: "It's your birthday. Someone gives you a calfskin wallet. How do you react?",
     config: {
-      visual: '👛',
+      icon: 'wallet',
       options: ["I wouldn't accept it", "I'd report the person", 'Nice wallet', "What's a calf?"],
     } satisfies ChoiceConfig,
     empathyRange: [-2, 2],
@@ -100,7 +100,7 @@ export const act2: Challenge[] = [
     tags: ['harsh'],
     prompt: "You're watching a stage play. A banquet is in progress. The guests are enjoying raw oysters. The entrée consists of boiled dog.",
     config: {
-      visual: '🦪',
+      icon: 'oyster',
       options: ['The oysters are fine. The dog is not.', 'Neither is fine.', 'Both are fine.', 'Is this a vegan thing?'],
     } satisfies ChoiceConfig,
     empathyRange: [-2, 1],
@@ -121,7 +121,7 @@ export const act2: Challenge[] = [
     tags: ['harsh'],
     prompt: 'Your little boy shows you his butterfly collection, plus the killing jar.',
     config: {
-      visual: '🦋',
+      icon: 'butterfly',
       options: ["I'd take him to the doctor", "We'd talk about why", 'Nice collection', "I'd ask to borrow the jar"],
     } satisfies ChoiceConfig,
     empathyRange: [-2, 2],
@@ -191,7 +191,7 @@ export const act2: Challenge[] = [
     type: 'choice',
     tags: ['silly'],
     prompt: 'How many fingers?',
-    config: { visual: '🖐️', options: ['Four', 'Five', 'Six', 'Depends who is asking'] } satisfies ChoiceConfig,
+    config: { icon: 'hand', options: ['Four', 'Five', 'Six', 'Depends who is asking'] } satisfies ChoiceConfig,
     empathyRange: [-1, 1],
     evaluate: (a) => {
       if (a.kind !== 'choice') return ev(0, 0, '');

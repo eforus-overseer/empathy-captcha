@@ -107,8 +107,11 @@ export const renderText: Renderer<TextConfig> = (host, cfg, ctx) =>
     if (cfg.maxLength) field.setAttribute('maxlength', String(cfg.maxLength));
     const error = el('div', { class: 'error', role: 'alert' });
     const submit = el('button', { class: 'btn primary', type: 'button', text: 'Submit' });
+    submit.setAttribute('disabled', '');
+    ctx.gate.onReady(() => submit.removeAttribute('disabled'));
 
     const trySubmit = () => {
+      if (!ctx.gate.ready()) return;
       const text = field.value;
       const err = cfg.validate ? cfg.validate(text) : null;
       if (err) {

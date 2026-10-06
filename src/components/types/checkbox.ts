@@ -1,5 +1,6 @@
 import type { CheckboxConfig } from '../../challenges/configs';
 import { el, sleep } from '../dom';
+import { iconSvg } from '../icons';
 import type { Renderer } from './context';
 
 export const renderCheckbox: Renderer<CheckboxConfig> = (host, cfg, ctx) =>
@@ -35,6 +36,8 @@ export const renderCheckbox: Renderer<CheckboxConfig> = (host, cfg, ctx) =>
 
     const finish = async (checked: boolean) => {
       if (settled) return;
+      if (checked) await ctx.gate.whenReady();
+      if (settled) return;
       settled = true;
       skip.remove();
       if (checked) {
@@ -44,7 +47,7 @@ export const renderCheckbox: Renderer<CheckboxConfig> = (host, cfg, ctx) =>
         cbx.classList.remove('checking');
         cbx.classList.add('checked');
         cbx.setAttribute('aria-checked', 'true');
-        box.textContent = '✓';
+        box.innerHTML = iconSvg('Check');
         await sleep(ctx.reducedMotion ? 50 : 500);
       }
       resolve({ kind: 'checkbox', checked });

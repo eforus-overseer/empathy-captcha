@@ -53,6 +53,10 @@ describe('registry', () => {
       { kind: 'draw', strokes: [[[0, 10, 20, 15, 5], [0, 12, 5, 18, 3]]], durationMs: 3000, pointerType: 'mouse' },
       { kind: 'draw', strokes: [], durationMs: 500, pointerType: 'mouse' },
       { kind: 'draw', strokes: [[[0, 10, 20, 15, 5], [0, 12, 5, 18, 3]]], durationMs: 3000, pointerType: 'touch' },
+      { kind: 'trace', completed: true, meanErrorPx: 18, coverage: 0.7, sampleCount: 120 },
+      { kind: 'trace', completed: false, meanErrorPx: 200, coverage: 0, sampleCount: 2 },
+      { kind: 'rhythm', taps: 6, expected: 6, offsetsMs: [40, -60, 30], offsetIqrMs: 50, meanAbsOffsetMs: 90 },
+      { kind: 'rhythm', taps: 0, expected: 6, offsetsMs: [], offsetIqrMs: null, meanAbsOffsetMs: 999 },
     ];
     for (const c of registry) {
       for (const a of answers) {

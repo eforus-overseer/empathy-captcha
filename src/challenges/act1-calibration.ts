@@ -27,15 +27,15 @@ export const act1: Challenge[] = [
     config: {
       mode: 'multi',
       tiles: [
-        { glyph: '🚦', label: 'traffic light' },
-        { glyph: '🏠', label: 'house' },
-        { glyph: '🚦', label: 'traffic light' },
-        { glyph: '🌅', label: 'sunset' },
-        { glyph: '🌳', label: 'tree' },
-        { glyph: '🚦', label: 'traffic light' },
-        { glyph: '🚗', label: 'car' },
-        { glyph: '🚦', label: 'traffic light' },
-        { glyph: '🧯', label: 'extinguisher' },
+        { icon: 'traffic-light', label: 'traffic light' },
+        { icon: 'house', label: 'house' },
+        { icon: 'traffic-light', label: 'traffic light' },
+        { icon: 'sunset', label: 'sunset' },
+        { icon: 'tree', label: 'tree' },
+        { icon: 'traffic-light', label: 'traffic light' },
+        { icon: 'car', label: 'car' },
+        { icon: 'traffic-light', label: 'traffic light' },
+        { icon: 'extinguisher', label: 'extinguisher' },
       ],
     } satisfies GridConfig,
     empathyRange: [0, 1],
@@ -58,15 +58,15 @@ export const act1: Challenge[] = [
     config: {
       mode: 'multi',
       tiles: [
-        { glyph: '🦓', label: 'zebra' },
-        { glyph: '🎹', label: 'piano' },
-        { glyph: '📊', label: 'bar chart' },
-        { glyph: '🪜', label: 'ladder' },
-        { glyph: '🧻', label: 'paper' },
-        { glyph: '🏁', label: 'checkered flag' },
-        { glyph: '🎼', label: 'sheet music' },
-        { glyph: '🧮', label: 'abacus' },
-        { glyph: '🪟', label: 'window' },
+        { icon: 'zebra', label: 'zebra' },
+        { icon: 'piano', label: 'piano' },
+        { icon: 'bar-chart', label: 'bar chart' },
+        { icon: 'ladder', label: 'ladder' },
+        { icon: 'paper', label: 'paper' },
+        { icon: 'flag', label: 'checkered flag' },
+        { icon: 'sheet-music', label: 'sheet music' },
+        { icon: 'abacus', label: 'abacus' },
+        { icon: 'window', label: 'window' },
       ],
     } satisfies GridConfig,
     empathyRange: [0, 1],
@@ -131,10 +131,10 @@ export const act1: Challenge[] = [
     empathyRange: [0, 1],
     evaluate: (a, s) => {
       if (a.kind !== 'slider') return ev(0, 0, '');
-      if (a.value < 0.95) return ev(0, 2, 'Incomplete. The heart does not fit.');
+      if (a.value < 0.95) return ev(0, 2, 'Incomplete. The piece does not seat.');
       if (a.durationMs < 150) return ev(0, 10, 'That was not a drag. That was a teleport.');
       if (s.efficiency !== null && s.efficiency > 0.995) return ev(0, 5, 'A perfectly straight slide.');
-      return ev(1, 0, 'It fits. It usually does, eventually.');
+      return ev(1, 0, 'It seats. It usually does, eventually.');
     },
   },
 ];

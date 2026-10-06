@@ -7,7 +7,9 @@ export interface CheckboxConfig {
 }
 
 export interface Tile {
-  /** Emoji or short text drawn in the tile. */
+  /** Icon key (see src/components/icons.ts) drawn in the tile. */
+  icon?: string;
+  /** Short text drawn in the tile instead of an icon. */
   glyph?: string;
   /** Extra CSS class for drawn tiles (mirror, void, abstract-N). */
   css?: string;
@@ -34,7 +36,9 @@ export interface TextConfig {
 
 export interface ChoiceConfig {
   options: string[];
-  /** Emoji or short text shown above the options. */
+  /** Icon key shown above the options. */
+  icon?: string;
+  /** Short text shown above the options (rarely used). */
   visual?: string;
   /** Visual tiles instead of text buttons. */
   tiles?: Tile[];
@@ -44,6 +48,8 @@ export interface HoldConfig {
   mode: 'still' | 'inside-target' | 'follower';
   durationMs: number;
   glyph?: string;
+  /** Icon key shown in the hold zone. */
+  icon?: string;
   /** For follower mode: buttons offered while holding. */
   buttons?: string[];
   /** Pixel threshold for 'still' mode. */
@@ -66,6 +72,24 @@ export interface DrawConfig {
   word?: string;
   /** Hint glyph shown faintly behind the canvas. */
   glyph?: string;
+  /** Hint icon key shown faintly behind the canvas. */
+  icon?: string;
   /** Milliseconds before the canvas is accepted empty-handed (sketch). */
   prompt2?: string;
+}
+
+export interface TraceConfig {
+  /** Seconds the target moves; player keeps cursor on it. */
+  durationMs: number;
+  /** Radius in px within which the cursor counts as "on target". */
+  tolerancePx: number;
+  /** Path style the target follows. */
+  path: 'orbit' | 'figure8' | 'drift';
+}
+
+export interface RhythmConfig {
+  /** Number of beats to tap along with. */
+  beats: number;
+  /** Milliseconds between beats. */
+  intervalMs: number;
 }

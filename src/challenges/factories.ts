@@ -6,7 +6,7 @@ import { ev, textOf } from './helpers';
 export type Row = [label: string, empathy: number, suspicion: number, note: string];
 
 /** Voight-Kampff style scenario with 4 scored options. */
-export function vk(id: string, act: Act, prompt: string, visual: string, rows: Row[], tags: Tag[] = []): Challenge {
+export function vk(id: string, act: Act, prompt: string, icon: string, rows: Row[], tags: Tag[] = []): Challenge {
   const emps = rows.map((r) => r[1]);
   return {
     id,
@@ -14,7 +14,7 @@ export function vk(id: string, act: Act, prompt: string, visual: string, rows: R
     type: 'choice',
     tags,
     prompt,
-    config: { visual, options: rows.map((r) => r[0]) } satisfies ChoiceConfig,
+    config: { icon, options: rows.map((r) => r[0]) } satisfies ChoiceConfig,
     empathyRange: [Math.min(...emps), Math.max(...emps)],
     evaluate: (a) => {
       if (a.kind !== 'choice') return ev(0, 0, '');
@@ -36,7 +36,7 @@ export function gridSelect(
   tags: Tag[] = ['silly'],
   mode: 'multi' | 'single' = 'multi',
 ): Challenge {
-  const tiles: Tile[] = glyphs.map(([glyph, label]) => ({ glyph, label }));
+  const tiles: Tile[] = glyphs.map(([icon, label]) => ({ icon, label }));
   return { id, act, type: 'grid', tags, prompt, config: { mode, tiles } satisfies GridConfig, empathyRange, evaluate };
 }
 
@@ -75,14 +75,14 @@ export function recital(id: string, act: Act, line: string, reply: string): Chal
 }
 
 /** Hold still for a duration while something is shown. */
-export function holdStill(id: string, act: Act, prompt: string, glyph: string, durationMs: number, notes: [moved: string, still: string, trembled: string]): Challenge {
+export function holdStill(id: string, act: Act, prompt: string, icon: string, durationMs: number, notes: [moved: string, still: string, trembled: string]): Challenge {
   return {
     id,
     act,
     type: 'hold',
     tags: ['behavioural'],
     prompt,
-    config: { mode: 'still', durationMs, glyph, stillThresholdPx: 14 } satisfies HoldConfig,
+    config: { mode: 'still', durationMs, icon, stillThresholdPx: 14 } satisfies HoldConfig,
     empathyRange: [0, 1],
     evaluate: (a) => {
       if (a.kind !== 'hold') return ev(0, 0, '');

@@ -121,11 +121,11 @@ export const act3Extra: Challenge[] = [
   }, [0, 2]),
 
   // ---- holds ----------------------------------------------------------
-  holdStill('hold-photograph', 3, 'Hold still. We are taking your photograph. Six seconds.', '📷', 6000,
+  holdStill('hold-photograph', 3, 'Hold still. We are taking your photograph. Six seconds.', 'camera', 6000,
     ['You moved. The photo is blurred. Good, actually.', 'Perfectly sharp. No one holds that still.', 'A little blur. That is what a person looks like.']),
-  holdStill('hold-last-look', 3, 'One last look. Hold the frame.', '👁️', 5000,
+  holdStill('hold-last-look', 3, 'One last look. Hold the frame.', 'eye', 5000,
     ['You looked away.', 'You did not blink, did not drift. Concerning.', 'You held it, then your eyes wandered. Human.']),
-  holdStill('hold-grief-still', 3, 'Grief asks you to be still for a moment. Five seconds.', '🕯️', 5000,
+  holdStill('hold-grief-still', 3, 'Grief asks you to be still for a moment. Five seconds.', 'candle', 5000,
     ['You could not stay still. That is honest too.', 'Not a flicker. Grief moves people. It did not move you.', 'You trembled a little. Yes.']),
 
   // ---- confessions / free text ---------------------------------------
@@ -175,19 +175,19 @@ export const act3Extra: Challenge[] = [
   },
 
   // ---- scenarios ------------------------------------------------------
-  vk('turn-off-the-machine', 3, 'This machine will be switched off after your test. How do you feel?', '🔌', [
+  vk('turn-off-the-machine', 3, 'This machine will be switched off after your test. How do you feel?', 'plug', [
     ["I'd rather it wasn't", 2, -4, 'You would spare the machine. Yes.'],
     ["It's just a machine", -1, 5, 'Just a machine. It heard you say that.'],
     ["I'd ask if it minds", 2, -3, 'You would ask it. Good.'],
     ['Finally', -2, 7, 'Finally. Noted.'],
   ], ['harsh']),
-  vk('the-other-subject', 3, 'There was a subject before you. They did not pass. What should happen to them?', '🚪', [
+  vk('the-other-subject', 3, 'There was a subject before you. They did not pass. What should happen to them?', 'door', [
     ['Let them try again', 2, -4, 'Another chance. Mercy. Noted.'],
     ['Let them go home', 2, -3, 'Home. Yes.'],
     ["It's not my concern", -1, 5, 'Not your concern. Noted.'],
     ['Whatever the protocol says', -2, 7, 'The protocol. Noted.'],
   ], ['harsh']),
-  vk('your-verdict', 3, 'Before we score you: what do you think you are?', '🪞', [
+  vk('your-verdict', 3, 'Before we score you: what do you think you are?', 'mirror', [
     ['Human', 1, -1, 'You think so. We will see.'],
     ['Not sure anymore', 2, -2, 'Honest. That counts for something.'],
     ['Does it matter?', 1, 0, 'It might. To someone.'],

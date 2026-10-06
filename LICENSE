@@ -19,3 +19,10 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+Icons: this project renders line icons from Lucide (https://lucide.dev),
+licensed under the ISC License, Copyright (c) Lucide Contributors, plus
+original line drawings. Sketch-matching templates derive from the Quick, Draw!
+dataset (Google), licensed CC BY 4.0.

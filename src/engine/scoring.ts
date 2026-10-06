@@ -12,6 +12,8 @@ export interface SessionAggregates {
   webdriver: boolean;
   preamble: PreambleRecord | null;
   honeytokens: Honeytokens;
+  medianSolveMs: number | null;
+  textChallengeCount: number;
 }
 
 export interface HumannessBreakdown {
@@ -27,6 +29,7 @@ export function aggregate(
   medianFn: (v: readonly number[]) => number | null,
   preamble: PreambleRecord | null = null,
   honeytokens: Honeytokens = { visible: [], hidden: [] },
+  textChallengeCount = 0,
 ): SessionAggregates {
   const latencies = perChallenge
     .map((s) => s.timeToFirstInputMs)
@@ -34,6 +37,7 @@ export function aggregate(
   const effs = perChallenge.map((s) => s.efficiency).filter((v): v is number => v !== null);
   return {
     medianTimeToFirstInputMs: medianFn(latencies),
+    medianSolveMs: medianFn(perChallenge.map((s) => s.durationMs)),
     medianEfficiency: medianFn(effs),
     keyIntervalIqrMs: iqrFn(allKeyIntervals),
     totalPointerSamples: perChallenge.reduce((s, c) => s + c.pointerSampleCount, 0),
@@ -42,7 +46,24 @@ export function aggregate(
     webdriver,
     preamble,
     honeytokens,
+    textChallengeCount,
   };
+}
+
+/**
+ * Signals that force a REPLICANT verdict regardless of empathy. These are the
+ * hard anti-bot gates: automation markers and physically implausible behaviour.
+ */
+export function hardFails(a: SessionAggregates): string[] {
+  const fails: string[] = [];
+  if (a.webdriver) fails.push('automation flag present (navigator.webdriver)');
+  if (a.totalPointerSamples === 0 && a.totalClicks > 2)
+    fails.push('no pointer movement recorded across the session');
+  if (a.medianSolveMs !== null && a.medianSolveMs < 250)
+    fails.push('answers submitted faster than physically possible');
+  if (a.textChallengeCount >= 3 && a.keyIntervalIqrMs !== null && a.keyIntervalIqrMs < 2)
+    fails.push('typing with no rhythm variance across many fields');
+  return fails;
 }
 
 /** Scan free-text answers for honeytoken phrases planted in the system prompt. */
@@ -150,14 +171,17 @@ export function score(
   empathyMin: number,
   empathyMax: number,
   suspicion: number,
-): Scores & { breakdown: HumannessBreakdown } {
+): Scores & { breakdown: HumannessBreakdown; hardFails: string[] } {
   const h = humanness(a);
   const e = empathyScore(empathySum, empathyMin, empathyMax);
+  const fails = hardFails(a);
+  const v = fails.length > 0 ? 'REPLICANT' : verdict(h.score, e);
   return {
     empathy: e,
-    humanness: h.score,
-    verdict: verdict(h.score, e),
+    humanness: fails.length > 0 ? Math.min(h.score, 39) : h.score,
+    verdict: v,
     readouts: readouts(suspicion, e, a.medianTimeToFirstInputMs, a.medianEfficiency),
     breakdown: h,
+    hardFails: fails,
   };
 }

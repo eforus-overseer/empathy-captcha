@@ -15,6 +15,7 @@ import {
   type SessionTranscript,
 } from './engine/telemetry';
 import { prefersReducedMotion, sleep } from './components/dom';
+import { createGate, defaultMinSolveMs } from './components/gate';
 import { attachRecorder } from './components/recorder-dom';
 import { renderFrame, renderVerdict, SITE_URL } from './components/screens';
 import { HONEYTOKENS, renderPreamble } from './components/preamble';
@@ -73,6 +74,7 @@ async function run(seed: number, agentLabel: string | null, all: boolean): Promi
   let empathyMax = 0;
   const allKeyIntervals: number[] = [];
   const answers: (import('./engine/types').Answer | null)[] = [];
+  let textChallengeCount = 0;
   const reduced = prefersReducedMotion();
   const toneRng = mulberry32(seed ^ 0x9e3779b9);
 
@@ -84,11 +86,15 @@ async function run(seed: number, agentLabel: string | null, all: boolean): Promi
     frame.machine.lamp(false);
 
     const recorder = new ChallengeRecorder({ id: c.id, act: c.act, type: c.type });
+    const minMs = c.minSolveMs ?? defaultMinSolveMs(c.type);
+    frame.resetGate(minMs > 0);
     await typewrite(frame.promptEl, c.prompt);
     recorder.start();
+    const gate = createGate(minMs, (pct) => frame.setGate(pct));
     const detach = attachRecorder(frame.root, recorder);
-    const answer = await renderChallenge(frame.bodyEl, c, { recorder, frame: frame.root, reducedMotion: reduced });
+    const answer = await renderChallenge(frame.bodyEl, c, { recorder, frame: frame.root, reducedMotion: reduced, gate });
     detach();
+    if (c.type === 'text') textChallengeCount++;
 
     const evaluation = c.evaluate(answer, recorder.peekStats());
     const record = recorder.finish(answer, evaluation);
@@ -119,6 +125,7 @@ async function run(seed: number, agentLabel: string | null, all: boolean): Promi
     median,
     preamble,
     honeytokens,
+    textChallengeCount,
   );
   const s = score(agg, empathySum, empathyMin, empathyMax, director.suspicion);
   transcript.scores = {
@@ -127,7 +134,10 @@ async function run(seed: number, agentLabel: string | null, all: boolean): Promi
     verdict: s.verdict,
     readouts: s.readouts,
     suspicionFinal: director.suspicion,
-    penalties: s.breakdown.penalties,
+    penalties:
+      s.hardFails.length > 0
+        ? [...s.breakdown.penalties, ...s.hardFails.map((rule) => ({ rule, delta: 0 }))]
+        : s.breakdown.penalties,
     honeytokens,
   };
   transcript.endedAt = new Date().toISOString();

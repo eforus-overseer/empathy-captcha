@@ -1,13 +1,14 @@
 import type { SliderConfig } from '../../challenges/configs';
 import { el } from '../dom';
+import { iconEl } from '../icons';
 import type { Renderer } from './context';
 
 export const renderSlider: Renderer<SliderConfig> = (host, cfg, ctx) =>
   new Promise((resolve) => {
-    const slot = el('div', { class: 'slot', text: '♥' });
+    const slot = el('div', { class: 'slot' }, iconEl('Puzzle', 'slot-icon'));
     const puzzle = el('div', { class: 'puzzle', 'aria-hidden': 'true' }, slot);
     const fill = el('div', { class: 'fill' });
-    const knob = el('div', { class: 'knob', role: 'slider', 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': '0', tabindex: '0', text: '♥' });
+    const knob = el('div', { class: 'knob', role: 'slider', 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': '0', tabindex: '0' }, iconEl('Puzzle', 'knob-icon'));
     const track = el('div', { class: 'track' }, fill, el('div', { class: 'track-label', text: cfg.label }), knob);
     host.append(el('div', { class: 'slider-wrap' }, puzzle, track));
 
@@ -41,7 +42,7 @@ export const renderSlider: Renderer<SliderConfig> = (host, cfg, ctx) =>
       dragging = false;
       const durationMs = Math.round(performance.now() - startT);
       if (value >= 0.95) setValue(1);
-      resolve({ kind: 'slider', value, durationMs });
+      void ctx.gate.whenReady().then(() => resolve({ kind: 'slider', value, durationMs }));
     };
     knob.addEventListener('pointerup', release);
     knob.addEventListener('pointercancel', release);
@@ -53,7 +54,7 @@ export const renderSlider: Renderer<SliderConfig> = (host, cfg, ctx) =>
           ctx.recorder.input();
         }
         setValue(value + (e.key === 'ArrowRight' ? 0.1 : -0.1));
-        if (value >= 0.95) resolve({ kind: 'slider', value: 1, durationMs: Math.round(performance.now() - startT) });
+        if (value >= 0.95) void ctx.gate.whenReady().then(() => resolve({ kind: 'slider', value: 1, durationMs: Math.round(performance.now() - startT) }));
       }
     });
   });

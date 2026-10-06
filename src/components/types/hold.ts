@@ -1,6 +1,7 @@
 import type { HoldConfig } from '../../challenges/configs';
 import { jitter, type Sample } from '../../engine/stats';
 import { el, relativeTo } from '../dom';
+import { iconEl } from '../icons';
 import type { Renderer } from './context';
 
 function ring(zone: HTMLElement): { set(p: number): void } {
@@ -89,7 +90,9 @@ export const renderHold: Renderer<HoldConfig> = (host, cfg, ctx) =>
     let target: HTMLElement | null = null;
 
     if (cfg.mode === 'still') {
-      const glyph = el('div', { class: 'hold-glyph', 'aria-hidden': 'true', text: cfg.glyph ?? '' }, el('i', { class: 'tear' }), el('i', { class: 'tear' }));
+      const glyph = el('div', { class: 'hold-glyph', 'aria-hidden': 'true' }, el('i', { class: 'tear' }), el('i', { class: 'tear' }));
+      if (cfg.icon) glyph.prepend(iconEl(cfg.icon, 'hold-icon'));
+      else if (cfg.glyph) glyph.prepend(el('span', { text: cfg.glyph }));
       zone.append(glyph);
       status.textContent = 'Move your cursor into the frame to begin. Then do not move.';
       zone.addEventListener('pointerenter', (e) => startTimer(e), { once: true });
@@ -115,7 +118,9 @@ export const renderHold: Renderer<HoldConfig> = (host, cfg, ctx) =>
     }
 
     if (cfg.mode === 'follower') {
-      follower = el('div', { class: 'follower', 'aria-hidden': 'true', text: cfg.glyph ?? '' });
+      follower = el('div', { class: 'follower', 'aria-hidden': 'true' });
+      if (cfg.icon) follower.append(iconEl(cfg.icon, 'follower-icon'));
+      else follower.append(el('span', { text: cfg.glyph ?? '' }));
       document.body.append(follower);
       status.textContent = 'It is on you now.';
       const row = el('div', { class: 'row' });
@@ -134,7 +139,7 @@ export const renderHold: Renderer<HoldConfig> = (host, cfg, ctx) =>
         });
         row.append(b);
       }
-      zone.append(el('div', { class: 'hold-glyph', 'aria-hidden': 'true', text: '🖱️' }));
+      zone.append(el('div', { class: 'hold-glyph', 'aria-hidden': 'true' }, iconEl('MousePointer2', 'hold-icon')));
       host.append(row);
     }
 

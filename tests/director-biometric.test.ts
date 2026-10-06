@@ -23,6 +23,7 @@ describe('every run exercises the motor-control challenges', () => {
       // at least one drawing challenge too
       const drawCount = ids.filter((id) => id.startsWith('sketch-') || id.startsWith('cursive-')).length;
       expect(drawCount, `seed ${seed} drawings`).toBeGreaterThanOrEqual(2);
+      expect(ids.filter((id) => id.startsWith('math-')).length, `seed ${seed} math`).toBeGreaterThanOrEqual(3);
     }
   });
 });

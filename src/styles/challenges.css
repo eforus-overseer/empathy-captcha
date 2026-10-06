@@ -358,3 +358,22 @@
 }
 .rhythm-tap { min-width: 120px; }
 @media (prefers-reduced-motion: reduce) { .rhythm-pulse { transition: background 90ms; } }
+
+/* ---- math ---- */
+.math-wrap { display: grid; gap: 16px; justify-items: center; width: 100%; }
+.math-problem {
+  font-family: var(--mono);
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--accent);
+  text-align: center;
+  padding: 18px 22px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  max-width: 480px;
+  line-height: 1.4;
+}
+@media (min-width: 640px) { .math-problem { font-size: 28px; } }
+.math-field { max-width: 320px; text-align: center; font-size: 20px; }

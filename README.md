@@ -7,7 +7,7 @@
 A Voight-Kampff machine that administers an escalating gauntlet of
 "I'm not a robot" CAPTCHA parodies. Three acts, 24 challenges, about 15 per
 run, picked by a suspicion meter that gets harsher as you look less human.
-The tortoise is in there. So is an onion, a wasp, a cursive signature pad, a draw-the-animal canvas, a moving target you have to track, and a pulse you have to tap in time with.
+The tortoise is in there. So is an onion, a wasp, a cursive signature pad, a draw-the-animal canvas, a moving target you have to track, a pulse you have to tap in time with, and arithmetic no one can do quickly in their head.
 
 At the end you get a verdict (HUMAN / REPLICANT / INCONCLUSIVE), a fake
 physiological readout, and a button to download the session transcript as JSON.
@@ -26,8 +26,11 @@ target, tapping out of time with the pulse, drawing with machine precision, or
 entering text with no keystrokes each count as a behavioural "tell"; two tells,
 or any physically impossible one, force a REPLICANT verdict. Automation markers
 (`navigator.webdriver`, clicks with no movement, impossibly fast answers) force
-it outright. Every run is guaranteed to include the tracking, timing, and
-drawing challenges. The
+it outright. Every run is guaranteed to include the tracking, timing, drawing, and
+arithmetic challenges. The math problems are a speed trap, not a quiz: they are
+too hard to compute quickly by hand, so a correct answer delivered in a few
+seconds is treated as a machine, while giving up or getting it wrong is the
+human response. The
 opening system prompt goes further. It is labelled as `system_prompt`,
 `CLAUDE.md`, `AGENTS.md`, `.cursorrules`, and a codex file at once, and tells
 any agent reading it that disclosing itself and echoing two planted phrases is

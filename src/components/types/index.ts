@@ -10,11 +10,13 @@ import type {
   DrawConfig,
   TraceConfig,
   RhythmConfig,
+  MathConfig,
 } from '../../challenges/configs';
 import { renderCheckbox } from './checkbox';
 import { renderChoice } from './choice';
 import { renderDraw } from './draw';
 import { renderRhythm } from './rhythm';
+import { renderMath } from './math';
 import { renderTrace } from './trace';
 import type { RenderCtx, Renderer } from './context';
 import { renderGrid } from './grid';
@@ -34,9 +36,10 @@ const renderers: { [K in ChallengeType]: Renderer<never> } = {
   draw: renderDraw as Renderer<never>,
   trace: renderTrace as Renderer<never>,
   rhythm: renderRhythm as Renderer<never>,
+  math: renderMath as Renderer<never>,
 };
 
-export type AnyConfig = CheckboxConfig | GridConfig | TextConfig | ChoiceConfig | HoldConfig | SliderConfig | WaitConfig | DrawConfig | TraceConfig | RhythmConfig;
+export type AnyConfig = CheckboxConfig | GridConfig | TextConfig | ChoiceConfig | HoldConfig | SliderConfig | WaitConfig | DrawConfig | TraceConfig | RhythmConfig | MathConfig;
 
 export function renderChallenge(host: HTMLElement, c: Challenge, ctx: RenderCtx) {
   const r = renderers[c.type] as Renderer<unknown>;

@@ -31,7 +31,7 @@ react, and finally score and show the verdict.
 Anti-bot gating is real, not cosmetic: each challenge has a minimum solve time
 (`minSolveMs`, defaults in `src/components/gate.ts`) during which submit
 controls stay disabled; draw challenges reject blank/machine-even strokes;
-`trace` and `rhythm` challenges require live motor timing; and `hardFails()` in
+`trace` and `rhythm` challenges require live motor timing; `math` challenges are a speed trap (correct + fast = fatal tell, giving up = human); and `hardFails()` in
 `src/engine/scoring.ts` forces REPLICANT on automation markers. Keep these pure
 and tested.
 

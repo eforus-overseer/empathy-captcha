@@ -57,6 +57,9 @@ describe('registry', () => {
       { kind: 'trace', completed: false, meanErrorPx: 200, coverage: 0, sampleCount: 2 },
       { kind: 'rhythm', taps: 6, expected: 6, offsetsMs: [40, -60, 30], offsetIqrMs: 50, meanAbsOffsetMs: 90 },
       { kind: 'rhythm', taps: 0, expected: 6, offsetsMs: [], offsetIqrMs: null, meanAbsOffsetMs: 999 },
+      { kind: 'math', value: '', gaveUp: true, solveMs: 4000 },
+      { kind: 'math', value: '123', gaveUp: false, solveMs: 2000 },
+      { kind: 'math', value: '123', gaveUp: false, solveMs: 30000 },
     ];
     for (const c of registry) {
       for (const a of answers) {

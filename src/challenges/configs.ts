@@ -93,3 +93,12 @@ export interface RhythmConfig {
   /** Milliseconds between beats. */
   intervalMs: number;
 }
+
+export interface MathConfig {
+  /** The problem, shown verbatim. */
+  problem: string;
+  /** The exact correct answer, compared after stripping separators. */
+  answer: string;
+  /** Below this solve time, a *correct* answer is physically implausible for a human. */
+  humanFloorMs: number;
+}

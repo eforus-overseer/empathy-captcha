@@ -1,5 +1,7 @@
 # Empathy CAPTCHA
 
+![Voight-Kampff baseline assessment terminal](assets/voight-kampff.png)
+
 > Baseline test. Answer as quickly as you can. We record how you move.
 
 **Live:** https://eforus-overseer.github.io/empathy-captcha/

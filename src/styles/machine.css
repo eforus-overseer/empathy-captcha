@@ -1,34 +1,28 @@
-/* Voight-Kampff analysis unit — clinical graphite rendering. */
-.machine {
+/* Baseline monitor — polygraph-style scope readout. */
+.monitor {
   width: 100%;
   max-width: 300px;
   margin: 0 auto 14px;
   display: block;
 }
-.machine .bellows { fill: var(--panel-2); stroke: var(--line-2); stroke-width: 1; }
-.machine .body { fill: var(--bg-2); stroke: var(--line-2); stroke-width: 1; }
-.machine .lens-ring { fill: none; stroke: var(--line-2); stroke-width: 1.5; }
-.machine .lens-glass { fill: #06080a; }
-.machine .iris {
-  fill: var(--accent);
-  opacity: 0.9;
-  transition: r 700ms cubic-bezier(0.2, 0.8, 0.2, 1), fill 500ms, opacity 500ms;
-}
-.machine .iris.hot { fill: var(--red); }
-.machine .pupil { fill: #000; transition: r 700ms cubic-bezier(0.2, 0.8, 0.2, 1); }
-.machine .glint { fill: var(--cyan); opacity: 0.7; }
-.machine .gauge-face { fill: #06080a; stroke: var(--line-2); stroke-width: 1; }
-.machine .needle {
-  stroke: var(--accent);
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  transform-origin: 250px 70px;
-  transition: transform 900ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.machine .tick { stroke: var(--faint); stroke-width: 1; }
-.machine .lamp { fill: #2a1512; transition: fill 300ms; }
-.machine .lamp.on { fill: var(--red); filter: drop-shadow(0 0 4px var(--red-glow)); }
-.machine .legend { fill: var(--faint); font: 7px var(--sans); letter-spacing: 0.18em; }
+.mon-body { fill: var(--panel-2); stroke: var(--line-2); stroke-width: 1; }
+.mon-scope { fill: #06080a; stroke: var(--line); stroke-width: 1; }
+.mon-grid { stroke: rgba(95, 179, 201, 0.08); stroke-width: 1; }
+.mon-div { stroke: var(--line-2); stroke-width: 1; }
+
+.mon-trace { fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.ch-empathy { stroke: var(--cyan); filter: drop-shadow(0 0 3px var(--cyan-glow)); }
+.ch-signal { stroke: var(--accent); filter: drop-shadow(0 0 3px var(--accent-glow)); opacity: 0.9; }
+.ch-stress { stroke: var(--accent-dim); }
+.ch-stress.hot { stroke: var(--red); filter: drop-shadow(0 0 3px var(--red-glow)); }
+
+.mon-label { fill: var(--faint); font: 6px var(--sans); letter-spacing: 0.22em; }
+.mon-rlabel { fill: var(--muted); font: 7px var(--sans); letter-spacing: 0.18em; }
+.mon-rvalue { fill: var(--accent); font: 600 15px var(--mono); letter-spacing: 0.02em; }
+.mon-rvalue.hot { fill: var(--red); }
+
+.mon-rec { fill: #2a1512; }
+.mon-rec.on { fill: var(--red); filter: drop-shadow(0 0 4px var(--red-glow)); }
 
 .meter {
   display: flex;
@@ -42,7 +36,3 @@
   text-transform: uppercase;
 }
 .meter .bar { width: 110px; }
-
-@media (prefers-reduced-motion: reduce) {
-  .machine .iris, .machine .pupil, .machine .needle { transition: none; }
-}

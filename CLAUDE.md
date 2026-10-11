@@ -54,7 +54,7 @@ Add challenges per `docs/challenge-authoring.md`. Transcript format in
 - Challenge ids are stable identifiers that appear in exported data. Never rename one; add a new id instead.
 - Per-run plan is 25/45/30 challenges; the pool must stay at least that size per act (tests enforce it). Anchors: `not-a-robot` first, `tortoise` in act 2, `not-sure-anymore` last.
 - Every `evaluate` must stay inside its `empathyRange` (tests enforce this).
-- All visuals are CSS, inline SVG, and line icons from `src/components/icons.ts` (Lucide ISC + original drawings). No emoji, no raster images, no film assets, no real faces, no copyrighted characters. Sketch templates come from Quick, Draw! (CC BY 4.0, attributed in README).
+- All visuals are CSS, inline SVG, and line icons from `src/components/icons.ts` (Lucide ISC + original drawings). No emoji in the UI; the only raster image is the user-supplied hero at assets/voight-kampff.png (README + public/og.png social card), not used in the live UI. No film assets or copyrighted characters. Sketch templates come from Quick, Draw! (CC BY 4.0, attributed in README).
 - Humour is PG. No slurs, sexual content, or gore. The interrogator is dry, never cruel about the player as a person.
 - `prefers-reduced-motion` must keep working: no typewriter, no flicker, checkbox does not dodge.
 

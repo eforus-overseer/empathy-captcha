@@ -123,3 +123,11 @@ browser games. All art here is CSS, inline SVG, and emoji. MIT licensed.
 
 [Project page & walkthrough](https://eforus-overseer.github.io/demo-lab/projects/empathy-captcha/) — Explore the project, its method, and available demos or original artifacts.
 <!-- demo-lab:end -->
+
+
+<!-- codex-pixel-art -->
+## Pixel art
+
+![Pixel art for empathy-captcha](assets/pixel-art.svg)
+
+A small visual signature for this repository.

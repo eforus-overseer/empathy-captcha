@@ -130,4 +130,4 @@ browser games. All art here is CSS, inline SVG, and emoji. MIT licensed.
 
 ![Pixel-art cover for empathy-captcha](assets/project-cover.png)
 
-<sub>Pixel-art adaptation of [Catastrophe (45600056)](https://commons.wikimedia.org/wiki/File:Catastrophe_(45600056).jpg) by Big Ben in Japan, licensed [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0). Source: Wikimedia Commons.</sub>
+<sub>Pixel-art adaptation of [OpenMoji handshake](https://github.com/hfg-gmuend/openmoji/blob/master/color/618x618/1F91D.png) by OpenMoji contributors, licensed [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Source: OpenMoji.</sub>

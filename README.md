@@ -126,8 +126,8 @@ browser games. All art here is CSS, inline SVG, and emoji. MIT licensed.
 
 
 <!-- codex-pixel-art -->
-## Pixel art
+## Project visual
 
-![Pixel art for empathy-captcha](assets/pixel-art.svg)
+![Pixel-art cover for empathy-captcha](assets/project-cover.png)
 
-A small visual signature for this repository.
+<sub>Pixel-art adaptation of [Catastrophe (45600056)](https://commons.wikimedia.org/wiki/File:Catastrophe_(45600056).jpg) by Big Ben in Japan, licensed [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0). Source: Wikimedia Commons.</sub>
